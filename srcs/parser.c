@@ -4,218 +4,128 @@
 #include "minishell.h"
 
 
+t_node* create_node(t_type type) //CMD
+{
+	t_node *node;
+
+	node = (t_node *)malloc(sizeof(t_node));
+	if (!node)
+		error("alloc error");
+	node->type = type;
+	node->left = NULL;
+	node->right = NULL;
+	if (type == CMD)
+	{
+		node->value = (char *)malloc((4) * sizeof(char));
+		node->value = "CMD\0";
+	}
+	return(node);
+}
 
 
 t_node* tok_to_nod(t_token *token)
 {
-	t_node *node = (t_node *)malloc(sizeof(t_node));
-	node->type = token->type;
-	node->P = token->P;
-	node->value = (token->value);
-	node->left = NULL;
-	node->right = NULL;
+	t_node *node;
 
-	return node;
+	node = create_node(token->type);
+	node->P = token->P;
+	node->value = token->value;
+ 	return node;
 }
 
 
-
-// t_node *cmd_parse_loop(t_token *token)
-// {
-	
-// 	t_node *node_cmd;
-// 	t_node *args;
-
-// 	if (token->P != WORD)
-// 		return( error("bad token type"), NULL);
-// 	node_cmd = tok_to_nod(token);
-// 	if (token->next)
-// 		token = token->next;
-// 	while  (token && token->type == 1)
-// 	{
-// 		args = tok_to_nod(token);
-// 		if (token->next)
-// 			token = token->next
-// 	}
-// 	return node_cmd;
-// }
-
-t_node *parse_cmd(t_token **token)
+t_node *parse_cmd(t_token **token, t_node *right)
 {
 	t_node *cmd_node;
-	t_node *right;
 
-	right = NULL;
+	cmd_node = create_node(CMD);
 	cmd_node->left = tok_to_nod(*token);
-	cmd_node->right = right;
-
-	while((*token) && (*token)->P == 1)
+printf("%s : left<-CMD\n", cmd_node->left->value);
+	*token = (*token)->next;
+	while((*token) && (*token)->type == WORD)
 	{
+		if (!right)
+		{
+			cmd_node->right = tok_to_nod(*token);
+			right = cmd_node->right;
+		}
+		else
+		{
+			right->right = tok_to_nod(*token); // вызвать специальную функцию для обработки слов и кавыяе
+			right = right->right;
+		}
+printf("		CMD->right : %s\n", right->value);
 		*token = (*token)->next;
-		right = tok_to_nod(*token);
-		right = right->right;
+	}
+	if (*token && (*token)->P == 2 && (*token)->next->type == WORD)
+	{
+		cmd_node->left->left = tok_to_nod(*token);
+		*token = (*token)->next;
+		cmd_node->left->left->right = tok_to_nod(*token);
+		*token = (*token)->next;
 	}
 	return (cmd_node);
 }
 
-t_node *parse_loop(t_token *token, t_node *cmd_node)
+t_node *parse_loop(t_token **token, t_node *cmd_node)
 {
 	t_node *pipe_node;
 
 	while (token)
 	{
-		if (token->type == WORD)
-			cmd_node = parse_cmd(&token);
-		if (token && token->type == PIPE)
+		if ((*token)->type == WORD)
+			cmd_node = parse_cmd(token, NULL);
+		if (*token && (*token)->type == PIPE)
 		{
 			if (!cmd_node)
 				return (error("wrong input"), NULL);
-			pipe_node = tok_to_nod(token);
+			pipe_node = tok_to_nod(*token);
 			pipe_node->left = cmd_node;
-			if (!token->next || token->next->type != WORD)
+printf("%s <-CMD <-|\n", cmd_node->left->value);
+
+			*token = (*token)->next;
+			if (!*token || (*token)->type != WORD)
 				return (error("wrong input"), NULL);
-			pipe_node->right= parse_loop(token->next, NULL); // что вернет ?
+			pipe_node->right= parse_loop(token, NULL); // что вернет ? тоже надо брать адрес с указателя?
+printf("|-> %s\n", pipe_node->right->left->value);
 			return(pipe_node);
 		}
 		else 
 			return cmd_node;
 	}
+	return (NULL);
 }
 
-
-
-/*
-t_node *parse(t_node *prev_node, t_token *token)
+void print_tree(t_node *node, int intent)
 {
-	t_node *new_node;
-
-	if (prev_node == NULL)
-		new_node = tok_to_nod(token); //check if command
-	else
+	if (!node)
+		return;
+	int i = intent;
+	while (i > 0)
 	{
-		if (token->P >= prev_node->P)
-		{
-			new_node = tok_to_nod(token);
-			new_node->left = prev_node;
-		}
-		else
-		{	
-			new_node = prev_node;
-			prev_node->right = parse();
-		}
+		printf("-\t");
+		i--;
 	}
-	if (token->next)
-		parse(new_node, token->next);
-	else
-		return(new_node);
+	printf("%s\n", node->value);
+	if (node->left)
+	{	
+		printf("left");
+		print_tree(node->left, intent + 1);
+	}
+	if (node->right)
+	{
+		printf("right");
+		print_tree(node->right, intent + 1);
+	}
+
 }
-*/
+
 
 void parser(t_data *data) 
 {
-	data->low_left_node = parse_loop(data->tok_list);
-
+	data->tree = parse_loop(&data->tok_list, NULL);
+	// printf("TYPE: %d\n", data->tree->type);
+	// printf("VALUE: %s\n", data->tree->left->left->value );
+	print_tree(data->tree, 0);
+	printf("!\n");
 }
-
-/*
-int parse_expression(const char **expr, int min_precedence) {
-	
-	int left_operand = parse_primary(expr);
-	
-	while (1) {
-		const char* expr_snapshot = *expr;
-		Token token = get_next_token(&expr_snapshot);
-		int token_precedence = precedence(token.type);     
-		
-		if (token_precedence < min_precedence)
-		
-			break;  //return(left);
-
-		*expr = expr_snapshot;
-		int right_operand = parse_expression(expr, token_precedence + 1);
-		
-		
-		switch (token.type) {
-			case ADD: left_operand += right_operand; break;
-			case SUBTRACT: left_operand -= right_operand; break;
-			case MULTIPLY: left_operand *= right_operand; break;
-			case DIVIDE: left_operand /= right_operand; break;
-			default: break;
-		}
-		new node = new_node.left = left; new_node  = right;
-	}
-	
-	return left_operand;
-}
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// t_node *build_tree (t_token *token)
-// {
-// 	t_node *node;
-// 	t_node *new_node;
-// 	t_node *root;
-// 	int     max_prec;
-
-// 	if (token)
-// 		node = token_to_node(token);
-// 	else
-// 		return (NULL);
-// 	while (token)
-// 	{
-// 		new_node = token_to_node(token->next);
-// 		if (token->next && precedence(token->next) > precedence(token))
-// 		{
-// 			new_node->left_node = node;
-// 			while(node->prec > node->up->prec)
-// 			{
-// 				node = node->up;
-// 				node
-// 			}
-// 		}
-// 		else if (precedence(token->next) <= precedence(token))
-// 		{
-// 			node->right_node = new_node;
-// 			new_node->up = node;
-// 		}
-// 		node = new_node;
-// 		token = token->next;
-// 	}
-// }
-
-
-
-
-// сделать while выше двигаемся по узлам вверх
-// если выше уже нет делаем рут
-//   2
-//  / \
-// 1   1n
-
-// while (node->up->prec < node->prec) 
-// {
-// 	node->left = node->up->left;
-// 	node->right = node->up->right;
-// 	if (node->up->up)
-// 		node->up = node->up->up;
-// 	node
-
-// 	node = node->up;
-
-
- 

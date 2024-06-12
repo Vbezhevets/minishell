@@ -50,12 +50,12 @@ int char_detect(char *s)
 
 static int	ft_length(char *s)
 {
-	char *point;
+	char *start;
 	
-	point = s;
+	start = s;
 	while (*s && !ft_strchr(DELIM, *s))
 		s += char_detect(s);
-	return (s - point);
+	return (s - start);
 }
 
 
@@ -100,7 +100,7 @@ void	tokenizer(char *input_str, t_data *data)
 			input_str++;
 		if (*input_str == '\0')
 			return;
-		if (data->tok_qty == 0)
+		if (data->tok_quantity == 0)
 		{
 			data->tok_list = tok_create(input_str);
 			token = data->tok_list;
@@ -114,6 +114,6 @@ void	tokenizer(char *input_str, t_data *data)
 		else
 			return;
 		input_str = input_str + token->length;
-		data->tok_qty++;
+		data->tok_quantity++;
 	}
 }

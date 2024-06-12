@@ -13,6 +13,7 @@ typedef enum s_type
 	WORD,
 	CMD,
 	ARG,
+	RDRCT,
 	LR,
 	RL,
 	LRLR,
@@ -41,9 +42,9 @@ typedef struct s_node
 
 typedef struct s_data
 {
-	int		tok_qty;
+	int		tok_quantity;
 	t_token	*tok_list;
-	t_node	*low_left_node;
+	t_node	*tree;
 }	t_data;
 
 
@@ -51,7 +52,7 @@ void	tokenizer(char *input_str, t_data *data);
 void 	parser(t_data *data);
 int		error(char *str);
 // t_node* token_to_node(t_token *token);
-void print_tokens(t_token *tok);
+// void print_tokens(t_token *tok);
 t_node *climb_test(t_token *token, int min_precedence);
 
 
