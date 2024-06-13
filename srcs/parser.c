@@ -86,7 +86,7 @@ printf("%s <-CMD <-|\n", cmd_node->left->value);
 			*token = (*token)->next;
 			if (!*token || (*token)->type != WORD)
 				return (error("wrong input"), NULL);
-			pipe_node->right= parse_loop(token, NULL); // что вернет ? тоже надо брать адрес с указателя?
+			pipe_node->right= parse_loop(token, NULL); 
 printf("|-> %s\n", pipe_node->right->left->value);
 			return(pipe_node);
 		}
@@ -101,22 +101,26 @@ void print_tree(t_node *node, int intent)
 	if (!node)
 		return;
 	int i = intent;
+
+
+	if (node->left)
+	{	
+		print_tree(node->left, intent + 1);
+	}
+
 	while (i > 0)
 	{
-		printf("-\t");
+		printf("+---");
 		i--;
 	}
 	printf("%s\n", node->value);
-	if (node->left)
-	{	
-		printf("left");
-		print_tree(node->left, intent + 1);
-	}
+
 	if (node->right)
 	{
-		printf("right");
+		// printf("right");
 		print_tree(node->right, intent + 1);
 	}
+
 
 }
 
@@ -126,6 +130,7 @@ void parser(t_data *data)
 	data->tree = parse_loop(&data->tok_list, NULL);
 	// printf("TYPE: %d\n", data->tree->type);
 	// printf("VALUE: %s\n", data->tree->left->left->value );
+	printf("data->tree: %s", data->tree->value );
+	printf("\n\n");
 	print_tree(data->tree, 0);
-	printf("!\n");
 }
