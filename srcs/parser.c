@@ -15,10 +15,9 @@ t_node* create_node(t_type type) //CMD
 	node->left = NULL;
 	node->right = NULL;
 	if (type == CMD)
-	{
-		node->value = (char *)malloc((4) * sizeof(char));
-		node->value = "CMD\0";
-	}
+		node->value = "CMD";
+	if (type == RDRCT)
+		node->value = "RDRCT";
 	return(node);
 }
 
@@ -33,15 +32,45 @@ t_node* tok_to_nod(t_token *token)
  	return node;
 }
 
+t_node *parse_redir(t_node *left, t_token **token)
+{
+	t_node *rdr_node;
+	t_node *temp;
+
+	temp = left;
+	if (!(*token)->next || (*token)->next->type != WORD)
+		error("wrong redirect");
+	while(temp && temp->left)
+		temp = temp->left;
+	rdr_node = create_node(RDRCT);
+	rdr_node->left = tok_to_nod((*token)->next);
+	rdr_node->left->left = tok_to_nod(*token);
+	*token = (*token)->next;
+	*token = (*token)->next;
+	if (*token && (*token)->P == 2)
+		rdr_node->right = parse_redir(left, token); // return
+	if (temp)
+		temp->left = rdr_node;
+	return (rdr_node);
+}
+// void consume(t_token **token)
+// {
+// 	t_token *temp;
+
+// 	temp = tok_to_nod(*token);
+// 	*token = (*token)->next; 
+// }
 
 t_node *parse_cmd(t_token **token, t_node *right)
 {
 	t_node *cmd_node;
+	t_node *temp;
 
 	cmd_node = create_node(CMD);
-	cmd_node->left = tok_to_nod(*token);
-printf("%s : left<-CMD\n", cmd_node->left->value);
-	*token = (*token)->next;
+	if (*token && (*token)->P == 2)
+		cmd_node->left = parse_redir(NULL, token);
+	// if ((*token) && (*token)->type != WORD)
+	// 	error("wrong command");
 	while((*token) && (*token)->type == WORD)
 	{
 		if (!right)
@@ -51,29 +80,24 @@ printf("%s : left<-CMD\n", cmd_node->left->value);
 		}
 		else
 		{
-			right->right = tok_to_nod(*token); // вызвать специальную функцию для обработки слов и кавыяе
-			right = right->right;
+			temp = tok_to_nod(*token);
+			temp->right = cmd_node->right;
+			cmd_node->right = temp;
 		}
-printf("		CMD->right : %s\n", right->value);
 		*token = (*token)->next;
 	}
-	if (*token && (*token)->P == 2 && (*token)->next->type == WORD)
-	{
-		cmd_node->left->left = tok_to_nod(*token);
-		*token = (*token)->next;
-		cmd_node->left->left->right = tok_to_nod(*token);
-		*token = (*token)->next;
-	}
+	if (*token && (*token)->P == 2)
+		parse_redir(cmd_node->left, token);
 	return (cmd_node);
 }
 
 t_node *parse_loop(t_token **token, t_node *cmd_node)
 {
 	t_node *pipe_node;
-
-	while (token)
+	
+	while (*token)
 	{
-		if ((*token)->type == WORD)
+		if (*token && (*token)->P < 3)
 			cmd_node = parse_cmd(token, NULL);
 		if (*token && (*token)->type == PIPE)
 		{
@@ -81,13 +105,10 @@ t_node *parse_loop(t_token **token, t_node *cmd_node)
 				return (error("wrong input"), NULL);
 			pipe_node = tok_to_nod(*token);
 			pipe_node->left = cmd_node;
-printf("%s <-CMD <-|\n", cmd_node->left->value);
-
 			*token = (*token)->next;
-			if (!*token || (*token)->type != WORD)
+			if (!*token || ((*token)->P != 1 && (*token)->P != 2))
 				return (error("wrong input"), NULL);
-			pipe_node->right= parse_loop(token, NULL); 
-printf("|-> %s\n", pipe_node->right->left->value);
+			pipe_node->right = parse_loop(token, NULL); 
 			return(pipe_node);
 		}
 		else 
@@ -127,10 +148,10 @@ void print_tree(t_node *node, int intent)
 
 void parser(t_data *data) 
 {
-	data->tree = parse_loop(&data->tok_list, NULL);
-	// printf("TYPE: %d\n", data->tree->type);
-	// printf("VALUE: %s\n", data->tree->left->left->value );
-	printf("data->tree: %s", data->tree->value );
-	printf("\n\n");
+	t_token *start;
+
+	start = data->tok_list;
+	data->tree = parse_loop(&start, NULL);
+	
 	print_tree(data->tree, 0);
 }
