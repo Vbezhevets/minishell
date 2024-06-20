@@ -34,14 +34,12 @@ t_node* tok_to_nod(t_token *token)
 
 t_node *parse_redir(t_node *left, t_token **token)
 {
-	t_node *rdr_node;
-	t_node *temp;
+	t_node	*rdr_node;
 
-	temp = left;
 	if (!(*token)->next || (*token)->next->type != WORD)
 		error("wrong redirect");
-	while(temp && temp->left)
-		temp = temp->left;
+	while(left && left->left)
+		left = left->left;
 	rdr_node = create_node(RDRCT);
 	rdr_node->left = tok_to_nod((*token)->next);
 	rdr_node->left->left = tok_to_nod(*token);
@@ -49,17 +47,11 @@ t_node *parse_redir(t_node *left, t_token **token)
 	*token = (*token)->next;
 	if (*token && (*token)->P == 2)
 		rdr_node->right = parse_redir(left, token); // return
-	if (temp)
-		temp->left = rdr_node;
+	if (left)
+		left->left = rdr_node;
 	return (rdr_node);
 }
-// void consume(t_token **token)
-// {
-// 	t_token *temp;
-
-// 	temp = tok_to_nod(*token);
-// 	*token = (*token)->next; 
-// }
+// как отработает шелл два подобных редиректа
 
 t_node *parse_cmd(t_token **token, t_node *right)
 {
@@ -87,7 +79,7 @@ t_node *parse_cmd(t_token **token, t_node *right)
 		*token = (*token)->next;
 	}
 	if (*token && (*token)->P == 2)
-		parse_redir(cmd_node->left, token);
+		parse_redir(cmd_node, token);
 	return (cmd_node);
 }
 
