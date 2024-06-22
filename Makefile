@@ -2,7 +2,7 @@ NAME  = minishell
 
 CC    = cc
 CFLAGS= -I/usr/local/opt/readline/include -g # Add any other flags you need here
-LDFLAGS= -L/usr/local/opt/readline/lib -lreadline
+LDFLAGS= -L/usr/local/opt/readline/lib -lreadline 
 RM    = rm -rf
 
 LIBDIR= ./libft
@@ -13,7 +13,9 @@ SRCS  = \
 			${SRCSDIR}/main.c \
 			${SRCSDIR}/tokenizer.c \
 			${SRCSDIR}/parser.c \
-			${SRCSDIR}/test.c \
+			${SRCSDIR}/cmds.c \
+			${SRCSDIR}/free_errors.c \
+
 
 
 OBJSDIR     = ${SRCSDIR}/objs
