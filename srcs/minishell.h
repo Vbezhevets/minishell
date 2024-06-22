@@ -6,20 +6,28 @@
 #include <readline/history.h>
 # include "../libft/libft.h"
 
-# define DELIM "/t "
+# define DELIM " \n\t"
 
 typedef enum s_type
 {
 	WORD,
-	CMD,
-	ARG,
-	RDRCT,
 	LR,
 	RL,
 	LRLR,
 	RLRL,
+	FIELD,
+	EXP_FIELD,
+	CMD,
+	ARG,
+	RDRCT_NODE,
 	PIPE,
+	TO_FILE,
+	FROM_FILE,
+	TO_TO_FILE,
+	HEREDOC,
+	CMD_NODE
 }	t_type;
+
 
 typedef struct s_token
 {
@@ -40,20 +48,42 @@ typedef struct s_node
 	int				P;
 }	t_node;
 
+typedef struct s_cmd
+{
+	int		in;
+	int		out;
+	t_token	*to_file; //to
+	t_token	*to_to_file; //to
+	t_token	*from_file; //from
+	t_token	*args;
+	char	*her_doc; //from
+}	t_cmd;
+
 typedef struct s_data
 {
 	int		tok_quantity;
+	int		cmd_qty;
 	t_token	*tok_list;
 	t_node	*tree;
+	t_cmd	**cmd;
+	int		pipe[2];
 }	t_data;
+
 
 
 void	tokenizer(char *input_str, t_data *data);
 void 	parser(t_data *data);
-int		error(char *str);
+void		error(char *str);
+void	free_tree(t_node *node);
+void	free_tok(t_token *token);
+void 	travel_tree(t_node *node,  int depth, t_data *data);
+t_token	*create_tok(char *input_str);
+
+
+
 // t_node* token_to_node(t_token *token);
 // void print_tokens(t_token *tok);
-t_node *climb_test(t_token *token, int min_precedence);
+// testing: 
 
 
 

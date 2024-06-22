@@ -1,49 +1,45 @@
 #include "minishell.h"
 
 //int read_from_u
-int		error(char *str)
-{
-	//free
-	printf("%s\n", str);
-	exit(1);
-}
 
-t_data *data_init(t_data *data)
+
+
+t_data *init_data(t_data *data)
 {
 	data = (t_data *)malloc(sizeof(t_data));
 	if (!data)
 		exit(1);
 	data->tok_quantity = 0;
-    data->tok_list = NULL;
+	data->cmd_qty = 0;
+	data->tok_list = NULL;
+	data->cmd = (t_cmd **)malloc(sizeof(t_cmd *));
 	return(data);
 }
-// void print_tree(t_node *root) 
-// {
-// 	if (root == NULL) return;
-// 	printf("(");
-// 	print_tree(root->left);
-// 	printf(" %s ", root->value);
-// 	print_tree(root->right);
-// 	printf(")");
-// }
 
-int main()
+
+int main() 
 {
-	t_data	*data;
+	t_data	*data;	
 	char	*input;
 
-	data = data_init(data);
-	// while (1)
+	while (1)
 	{
+		data = init_data(data);
 		input = readline("Slava Ukraini! 🇺🇦 >"); 
-		if (input)
+		if (input)  
 		{
 			tokenizer(input, data);
 			parser(data);
+			travel_tree(data->tree, data->cmd, 0, data);
+			free_tree(data->tree);
+			free_tok(data->tok_list);
+			free(input);
 		}
-		// print_tree(data->root);
+		free(data);
+		rl_clear_history();
 	}
-	// print_tokens(data->tok_list);
-	exit(0);
+
+	exit (0);
 }
+
 
