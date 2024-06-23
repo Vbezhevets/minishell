@@ -17,9 +17,9 @@ typedef enum s_type
 	RLRL,
 	FIELD,
 	EXP_FIELD,
+	RDRCT_NODE,
 	CMD,
 	ARG,
-	RDRCT_NODE,
 	PIPE,
 	TO_FILE,
 	FROM_FILE,
@@ -73,12 +73,12 @@ typedef struct s_data
 
 void	tokenizer(char *input_str, t_data *data);
 void 	parser(t_data *data);
-void		error(char *str);
+void	error(char *str);
 void	free_tree(t_node *node);
 void	free_tok(t_token *token);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
-
+t_cmd	*init_cmd(t_data *data);
 
 
 // t_node* token_to_node(t_token *token);

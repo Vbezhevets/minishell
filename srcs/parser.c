@@ -4,7 +4,7 @@
 #include "minishell.h"
 
 
-t_node* create_node(t_type type)
+t_node	*create_node(t_type type)
 {
 	t_node *node;
 
@@ -31,10 +31,7 @@ t_node* tok_to_nod(t_token *token)
 	node->value = token->value;
  	return node;
 }
-t_type recognize_rdr(t_token *token)
-{
 
-}
 t_node *parse_redir(t_node *left, t_token **token)
 {
 	t_node	*rdr_node;

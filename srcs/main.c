@@ -30,7 +30,8 @@ int main()
 		{
 			tokenizer(input, data);
 			parser(data);
-			travel_tree(data->tree, data->cmd, 0, data);
+			data->cmd[0] = init_cmd(data);
+			travel_tree(data->tree,  0, data);
 			free_tree(data->tree);
 			free_tok(data->tok_list);
 			free(input);
