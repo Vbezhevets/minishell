@@ -36,43 +36,19 @@ void assign_fild(t_node *node, t_cmd *cmd, int depth)
 	else if (node->type == FROM_FILE)
 		cmd->from_file = token;
 }
-t_cmd **add_cmd(t_data *data, int num)
-{
-	int i;
-	t_cmd **old_array;
-	t_cmd **new_a;
 
-	old_array = data->cmd;
-	i = 0;
-	if (num > 0)
-	{
-		while (i < num)
-		{
-			new_a[i] = (t_cmd *)malloc(sizeof(t_cmd));
-			ft_memcpy(new_a[i], old_array[i], sizeof(t_cmd));
-			free(old_array[i]);
-			i++;
-		}
-		new_a[i] = (t_cmd *)malloc(sizeof(t_cmd));
-		free(old_array);
-		data->cmd_qty++;
-	}
-	else 
-
-	return (new_a);
-}
-data->cmd[data->cmd_num++] = init_cmd(data);
 
 void build_cmd(t_node *node, t_data *data, int depth)
 {
 	t_token	*next_arg;
 	
 	next_arg = NULL;
+	printf("num %d qty %d\n", data->cmd_num, data->cmd_qty );
 	if (data->cmd_num == data->cmd_qty)
-		data->cmd[data->cmd_num] = init_cmd(data); // new
+		data->cmd[data->cmd_num] = init_cmd(data); //
 	else if (node->type == PIPE)
 	{
-		data->cmd = add_cmd(data, data->cmd_num++);
+		data->cmd[data->cmd_num++] = init_cmd(data);
 		return;	// + handle_pipe();
 	}
 	if (node->type == ARG  || node->type == CMD)

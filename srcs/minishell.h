@@ -10,22 +10,22 @@
 
 typedef enum s_type
 {
-	WORD,
-	LR,
-	RL,
-	LRLR,
-	RLRL,
-	FIELD,
-	EXP_FIELD,
-	RDRCT_NODE,
-	CMD,
-	ARG,
-	PIPE,
-	TO_FILE,
-	FROM_FILE,
-	TO_TO_FILE,
-	HEREDOC,
-	CMD_NODE
+	WORD, 	//0
+	LR,		//1
+	RL,		//2
+	LRLR,	//3
+	RLRL,	//4
+	FIELD,	//5
+	EXP_FIELD,//6
+	RDRCT_NODE,//7
+	CMD,	//8
+	ARG,	//9
+	PIPE,	//10
+	TO_FILE,//11
+	FROM_FILE,//12
+	TO_TO_FILE,//13
+	HEREDOC,//14
+	CMD_NODE//15
 }	t_type;
 
 
@@ -63,6 +63,7 @@ typedef struct s_data
 {
 	int		tok_quantity;
 	int		cmd_qty;
+	int		cmd_num;
 	t_token	*tok_list;
 	t_node	*tree;
 	t_cmd	**cmd;
@@ -79,6 +80,7 @@ void	free_tok(t_token *token);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data);
+
 
 
 // t_node* token_to_node(t_token *token);

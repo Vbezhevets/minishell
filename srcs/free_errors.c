@@ -10,10 +10,9 @@ void free_tree(t_node *node)
 		free_tree(node->left);
 	if (node->right)
 		free_tree(node->right);
-	if (node->value)
+	if (node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
 	{	
-		if (node->type != CMD_NODE && node->type != RDRCT_NODE)
-			free(node->value);
+		free(node->value);
 		node->value = NULL;
 	}
 	free(node);

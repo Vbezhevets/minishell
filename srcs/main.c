@@ -30,11 +30,13 @@ int main()
 		{
 			tokenizer(input, data);
 			parser(data);
-			data->cmd[0] = init_cmd(data);
+			
 			travel_tree(data->tree,  0, data);
+			printf("0: %s\n", data->cmd[0]->args->value);
 			free_tree(data->tree);
 			free_tok(data->tok_list);
 			free(input);
+
 		}
 		free(data);
 		rl_clear_history();
@@ -42,5 +44,4 @@ int main()
 
 	exit (0);
 }
-
 
