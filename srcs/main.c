@@ -19,8 +19,10 @@ t_data *init_data(t_data *data)
 
 int main() 
 {
-	t_data	*data;	
+	t_data	*data;
 	char	*input;
+
+	printf("PIDOR\n");
 
 	while (1)
 	{
@@ -29,10 +31,8 @@ int main()
 		if (input)  
 		{
 			tokenizer(input, data);
-			parser(data);
-			
+			parser(data);	
 			travel_tree(data->tree,  0, data);
-			printf("0: %s\n", data->cmd[0]->args->value);
 			free_tree(data->tree);
 			free_tok(data->tok_list);
 			free(input);

@@ -42,39 +42,29 @@ t_cmd **add_cmd(t_data *data, int num)
 	t_cmd **old_array;
 	t_cmd **new_a;
 
+	new_a = (t_cmd **)malloc((data->cmd_qty + 1) * sizeof(t_cmd*));
 	old_array = data->cmd;
 	i = 0;
-	if (num > 0)
+	while (i < data->cmd_qty)
 	{
-		while (i < num)
-		{
-			new_a[i] = (t_cmd *)malloc(sizeof(t_cmd));
-			ft_memcpy(new_a[i], old_array[i], sizeof(t_cmd));
-			free(old_array[i]);
-			i++;
-		}
 		new_a[i] = (t_cmd *)malloc(sizeof(t_cmd));
-		free(old_array);
-		data->cmd_qty++;
+		ft_memcpy(new_a[i], old_array[i], sizeof(t_cmd));
+		free(old_array[i]);
+		i++;
 	}
-	else 
-
+	free(old_array);
+	new_a[i] = init_cmd(data);
+	// printf("oa: %s\n", new_a[i]->args->value);
 	return (new_a);
 }
-data->cmd[data->cmd_num++] = init_cmd(data);
 
 void build_cmd(t_node *node, t_data *data, int depth)
 {
 	t_token	*next_arg;
 	
 	next_arg = NULL;
-	if (data->cmd_num == data->cmd_qty)
+	if (data->cmd_qty == 0)
 		data->cmd[data->cmd_num] = init_cmd(data); // new
-	else if (node->type == PIPE)
-	{
-		data->cmd = add_cmd(data, data->cmd_num++);
-		return;	// + handle_pipe();
-	}
 	if (node->type == ARG  || node->type == CMD)
 		next_arg = data->cmd[data->cmd_num]->args;
 	else if (node->type == TO_FILE)
@@ -102,13 +92,17 @@ void travel_tree(t_node *node,  int depth, t_data *data)
 		return;
 	if (node->left)
 		travel_tree(node->left, depth + 1, data);
+	if (node->type == PIPE)
+	{
+			data->cmd = add_cmd(data, data->cmd_num++); // nandle |
+	}
 	if (node->right)
 	{
 		travel_tree(node->right, depth + 1, data);
 	}
 	// if (node->type == PIPE)
 	// 	return;
-	if (node->type > 7 && node->type < 15)
+	if (node->type > 7 && node->type < 15 && node->type != PIPE) // move num
 		build_cmd(node, data, depth);
 	// printf("%s d: %d =- ", node->value, depth);
 }
