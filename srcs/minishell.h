@@ -11,21 +11,22 @@
 typedef enum s_type
 {
 	WORD, 	//0
-	LR,		//1
-	RL,		//2
-	LRLR,	//3
-	RLRL,	//4
-	FIELD,	//5
-	EXP_FIELD,//6
+	FIELD,	//1
+	EXP_FIELD,//2
+	LR,		//3
+	RL,		//4
+	LRLR,	//5
+	RLRL,	//6
 	RDRCT_NODE,//7
 	CMD,	//8
 	ARG,	//9
-	PIPE,	//10
-	TO_FILE,//11
-	FROM_FILE,//12
-	TO_TO_FILE,//13
-	HEREDOC,//14
-	CMD_NODE//15
+	EMTY,	//10
+	PIPE,	//11
+	CMD_NODE,//12
+	TO_FILE,//13
+	FROM_FILE,//14
+	TO_TO_FILE,//15
+	HEREDOC,//16
 }	t_type;
 
 
@@ -57,6 +58,9 @@ typedef struct s_cmd
 	t_token	*from_file; //from
 	t_token	*args;
 	char	*her_doc; //from
+	struct s_cmd	*next;
+	struct s_cmd	*prev;
+
 }	t_cmd;
 
 typedef struct s_data
@@ -64,9 +68,9 @@ typedef struct s_data
 	int		tok_quantity;
 	int		cmd_qty;
 	int		cmd_num;
+	t_cmd	*cmd_list;
 	t_token	*tok_list;
 	t_node	*tree;
-	t_cmd	**cmd;
 	int		pipe[2];
 }	t_data;
 
@@ -79,7 +83,10 @@ void	free_tree(t_node *node);
 void	free_tok(t_token *token);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
-t_cmd	*init_cmd(t_data *data);
+t_cmd	*init_cmd(t_data *data, t_cmd *prev);
+
+void print_cmd_fields(t_cmd **cmd_array, int cmd_count);
+
 
 
 

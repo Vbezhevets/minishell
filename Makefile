@@ -15,6 +15,7 @@ SRCS  = \
 			${SRCSDIR}/parser.c \
 			${SRCSDIR}/cmds.c \
 			${SRCSDIR}/free_errors.c \
+			${SRCSDIR}/test.c \
 
 
 

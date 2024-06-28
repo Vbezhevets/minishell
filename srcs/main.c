@@ -12,7 +12,7 @@ t_data *init_data(t_data *data)
 	data->tok_quantity = 0;
 	data->cmd_qty = 0;
 	data->tok_list = NULL;
-	data->cmd = (t_cmd **)malloc(sizeof(t_cmd *));
+	data->cmd_list = NULL;
 	return(data);
 }
 
@@ -22,7 +22,6 @@ int main()
 	t_data	*data;
 	char	*input;
 
-	printf("PIDOR\n");
 
 	while (1)
 	{
@@ -31,17 +30,19 @@ int main()
 		if (input)  
 		{
 			tokenizer(input, data);
-			parser(data);	
+			parser(data);
 			travel_tree(data->tree,  0, data);
+			// print_cmd_fields(data->cmd, data->cmd_qty);
 			free_tree(data->tree);
 			free_tok(data->tok_list);
-			free(input);
+			// free(input);	
 
 		}
 		free(data);
-		rl_clear_history();
 	}
 
 	exit (0);
 }
+
+
 

@@ -36,7 +36,7 @@ t_node *parse_redir(t_node *left, t_token **token)
 {
 	t_node	*rdr_node;
 
-	if (!(*token)->next || (*token)->next->type != WORD)
+	if (!(*token)->next || (*token)->next->type > 2)
 		error("wrong redirect");
 	while(left && left->left)
 		left = left->left;
@@ -59,7 +59,7 @@ void parse_cmd(t_token **token, t_node *cmd_node)
 	t_node *temp;
 
 	right = NULL;
-	while((*token) && (*token)->type == WORD)
+	while((*token) && ((*token)->type < 3))
 	{
 		if (!right)
 		{
@@ -93,7 +93,7 @@ t_node *parse_cmd_node(t_token **token)
 	if (*token && (*token)->P == 2)
 		parse_redir(cmd_node, token);
 	if (*token && (*token)->type != PIPE)
-			error("wrong command");
+			error("wrong command (should be a PIPE)");
 	return (cmd_node);
 }
 

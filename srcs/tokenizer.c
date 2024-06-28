@@ -8,18 +8,21 @@ int quoted(char *s)
 	i = 1;
 	q = *s;
 	s++;
-	while (*s && *s != q)
+
+	while (1)
 	{
+		if (*s == '\0')
+			error("quotes error");
+		if (*s == q && *(s - 1) != '\\')
+			break;
 		s++;
 		i++;
 	}
-	if (*s == '\0')
-		error("paraanteses error");
 	return (i + 1);
 }
 int tok_detect(char *token_value)
 {
-	if (token_value[0] == '>')
+	if (token_value[0] == '>') 
 	{
 		if (token_value[0] && ft_strlen(token_value) > 1 && token_value[1] == '>')
 			return (LRLR);
@@ -44,7 +47,7 @@ int tok_detect(char *token_value)
 
 int quot_detect(char *s)
 {
-	if (*s == 34 || *s == 39)
+	if (*s == 34 || *s == 39 )
 		return (quoted(s));
 	return (1);
 }
@@ -58,17 +61,18 @@ static int	ft_length(char *s)
 	start = s;
 	while (*s && !ft_strchr(DELIM, *s))
 	{
+		if (quot_detect(s) != 1)
+			return (quoted(s));
 		if (tok_detect(s) == RLRL || tok_detect(s) == LRLR)
 			l = 2;
 		else if (tok_detect(s) == RL || tok_detect(s) == LR || tok_detect(s) == PIPE)
 			l = 1;
-		if (l != 0 && (s - start))
-			return (s - start);
-		if (l != 0 && !(s-start))
+		if (l != 0 && !(s-start)) //  возрашаем значение редиректа
 			return (l);
+		if (l != 0 && (s - start)) // возврашаем значение перед редиерктом
+			return (s - start);
 		s += quot_detect(s);
 	}
-
 	return (s - start);
 }
 

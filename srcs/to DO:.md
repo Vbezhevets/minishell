@@ -1,9 +1,10 @@
-readline
-rl_clear_history
-rl_on_new_line
-rl_replace_line
-rl_redisplay
-add_history
+команды списком
+массив чаров для аргументов
+спец структ для редиректов
+попробовать один execve
+хердок как редирект (оставить на потом)
+историю оставить на потом
+8 ч в день минимум
 
 ls -a < file | grep -p | wc -l
 
