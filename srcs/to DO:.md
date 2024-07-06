@@ -10,8 +10,8 @@ ls -a < file | grep -p | wc -l
 
         __PIPE___
        /         \
-    CMD          PIPE
-    / \          /  \
-  file -a       -p   -l
-  /     \      /      \
- <       ls  grep     wc
+    CMD           PIPE
+    / \          /   \
+  file -a      -p    -l
+  /     \      /       \
+ <       ls  grep       wc

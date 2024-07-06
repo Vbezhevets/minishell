@@ -1,6 +1,20 @@
 #include "minishell.h"
 
+void	free_and_null_(char **a)
+{
+	int	i;
 
+	i = 0;
+	if (a != NULL)
+	{
+		while (a[i] != NULL)
+		{
+			free(a[i]);
+			a[i] = NULL;
+			i++;
+		}
+	}
+}
 
 void free_tree(t_node *node)
 {

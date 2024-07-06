@@ -9,7 +9,7 @@ void print_token_list(t_token *token) {
     }
     printf("\n");
 }
-
+/*
 void print_cmd_fields(t_cmd **cmd_array, int cmd_count) {
     for (int i = 0; i < cmd_count; i++) {
         printf("Command %d:\n", i + 1);
@@ -38,4 +38,4 @@ void print_cmd_fields(t_cmd **cmd_array, int cmd_count) {
         if (cmd->her_doc != NULL)
             printf("  her_doc: %s\n", cmd->her_doc);
     }
-}
+} */

@@ -18,10 +18,10 @@ typedef enum s_type
 	LRLR,	//5
 	RLRL,	//6
 	RDRCT_NODE,//7
-	CMD,	//8
-	ARG,	//9
-	EMTY,	//10
-	PIPE,	//11
+	PIPE,	//8
+	CMD,	//9
+	ARG,	//10
+	EMPTY,	//11
 	CMD_NODE,//12
 	TO_FILE,//13
 	FROM_FILE,//14
@@ -47,16 +47,20 @@ typedef struct s_node
 	struct	s_node	*left;
 	struct	s_node	*right;
 	int				P;
+	int				quot;
 }	t_node;
 
 typedef struct s_cmd
 {
 	int		in;
 	int		out;
+	int		args_qty;
+	int		interp;
+	char	**args;
+	char	*path;
 	t_token	*to_file; //to
 	t_token	*to_to_file; //to
 	t_token	*from_file; //from
-	t_token	*args;
 	char	*her_doc; //from
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
@@ -72,20 +76,25 @@ typedef struct s_data
 	t_token	*tok_list;
 	t_node	*tree;
 	int		pipe[2];
+	char	**envp;
 }	t_data;
 
 
 
 void	tokenizer(char *input_str, t_data *data);
 void 	parser(t_data *data);
-void	error(char *str);
-void	free_tree(t_node *node);
-void	free_tok(t_token *token);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data, t_cmd *prev);
+void 	add_cmd_args(t_node *node, t_cmd *cmd);
+
+void	error(char *str);
+void	free_tree(t_node *node);
+void	free_tok(t_token *token);
+void	free_and_null_(char **a);
 
 void print_cmd_fields(t_cmd **cmd_array, int cmd_count);
+
 
 
 

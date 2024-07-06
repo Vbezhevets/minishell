@@ -24,14 +24,14 @@ int tok_detect(char *token_value)
 {
 	if (token_value[0] == '>') 
 	{
-		if (token_value[0] && ft_strlen(token_value) > 1 && token_value[1] == '>')
+		if (ft_strlen(token_value) > 1 && token_value[1] == '>')
 			return (LRLR);
 		else
 			return (LR);
 	}
 	if (token_value[0] == '<')
 	{
-		if (token_value[0] && ft_strlen(token_value) > 1 && token_value[1] == '<')
+		if (ft_strlen(token_value) > 1 && token_value[1] == '<')
 			return (RLRL);
 		else
 			return (RL);
