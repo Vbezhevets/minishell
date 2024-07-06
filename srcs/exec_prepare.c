@@ -27,14 +27,43 @@ char	*get_path(char **envp, char *cmd)
 	return (NULL);
 }
 
-int exec_prepare(t_data *data, t_cmd *cmd, char **envp)
+
+void ext_cmd(t_data *data, t_cmd *cmd)
 {
-    	cmd->path = get_path(envp, cmd->args[0]);
-		if (!cmd->path)
-		{
-			ft_printf("command error!\n");
-			free_and_null_(cmd->args);
-			// free everything and exit
-		}
-	return(0);
+	cmd->path = get_path(data->envp, cmd->args[0]);
+	if (!cmd->path)
+	{
+		ft_printf("command error!\n");
+		free_and_null_(cmd->args);
+		// free everything and exit
+	}
 }
+
+int is_bltin(t_cmd *cmd)
+{
+	int i;
+
+	i = 6;
+	while (i >= 0)
+	{
+		if (!ft_strncmp(cmd->args[0], builtins[i], ft_strlen(cmd->args[0])))
+			return i + 1;
+		i--;
+	}
+	return (0);
+}
+int	exec(t_data *data)
+{
+	t_cmd	*cmd;
+
+	if (!data->cmd_qty)
+		return 0;
+	if (data->cmd_qty == 1)
+		cmd = data->cmd_list;
+	if (!is_bltin(cmd))
+	{
+		ext_cmd(data, cmd);
+		if (cmd->path)
+			printf("%s\n", cmd->path);
+	}
+ }

@@ -16,6 +16,7 @@ SRCS  = \
 			${SRCSDIR}/cmds.c \
 			${SRCSDIR}/cmd_utils.c \
 			${SRCSDIR}/exec_prepare.c \
+			${SRCSDIR}/exec.c \
 			${SRCSDIR}/free_errors.c \
 			${SRCSDIR}/test.c \
 

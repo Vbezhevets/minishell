@@ -29,6 +29,16 @@ typedef enum s_type
 	HEREDOC,//16
 }	t_type;
 
+static const char *const builtins[] = {
+	"echo",
+	"cd",
+	"pwd",
+	"export",
+	"unset",
+	"env",
+	"exit"
+};
+
 
 typedef struct s_token
 {
@@ -49,6 +59,12 @@ typedef struct s_node
 	int				P;
 	int				quot;
 }	t_node;
+
+
+// typedef struct s_builtins
+// {
+// 	char			*echo;
+// }	t_builtins
 
 typedef struct s_cmd
 {
@@ -87,6 +103,8 @@ void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data, t_cmd *prev);
 void 	add_cmd_args(t_node *node, t_cmd *cmd);
+int		exec(t_data *data);
+
 
 void	error(char *str);
 void	free_tree(t_node *node);

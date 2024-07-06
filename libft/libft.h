@@ -35,7 +35,7 @@ int		ft_toupper(int ch);
 int		ft_tolower(int ch);
 char	*ft_strchr(char *str, int c);
 char	*ft_strrchr(char *str, int c);
-int		ft_strncmp(char *str1, char *str2, size_t n);
+int		ft_strncmp(char *str1, const char *str2, size_t n);
 void	*ft_memchr(void *str, int c, size_t n);
 int		ft_memcmp(void *s1, void *s2, size_t n);
 char	*ft_strnstr(char *big, char *little, size_t len);

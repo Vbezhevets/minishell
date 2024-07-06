@@ -1,4 +1,6 @@
 #include "minishell.h"
 
-void echo()
-{}
+void echo(char **args)
+{
+    
+}
