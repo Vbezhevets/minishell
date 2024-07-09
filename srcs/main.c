@@ -52,9 +52,9 @@ int main(int argc, char **argv, char **envp)
 			tokenizer(input, data);
 			parser(data);
 			travel_tree(data->tree,  0, data);
-			exec(data);
-			free_tree(data->tree);
-			free_tok(data->tok_list);
+			if(data->cmd_list)
+				handle_cmd(data, data->cmd_list);
+			free_all(data);
 		}
 
 

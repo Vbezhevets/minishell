@@ -45,6 +45,26 @@ void	free_tok(t_token *token)
 	}
 }
 
+
+// void	free_cmds(t_cmd *cmd)
+// {
+// 	t_token *temp;
+
+// 	while (cmd)
+// 	{
+// 		cmd = cmd->next;
+// 		free(temp);
+// 	}
+// }
+
+
+void free_all(t_data *data)
+{
+	free_tree(data->tree);
+	free_tok(data->tok_list);
+	// free_cmds(data->cmd_list);
+}
+
 void error(char *str)
 {
 	//free

@@ -12,13 +12,12 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	// data->cmd[data->cmd_num] = cmd;
 	data->cmd_qty++;
 	cmd->args_qty = 0;
+	cmd->bi = 0;
+	cmd->in_fd = 0;
 	cmd->interp = 1; //
-	// cmd->args = (char **)malloc(sizeof(char *));
-	// if (!cmd->args)
-	// 	error("ты пидор!\n");
 	cmd->args = NULL;
 	cmd->to_file = NULL;
-	cmd->to_to_file = NULL;
+	// cmd->to_to_file = NULL;
 	cmd->from_file = NULL;
 	cmd->her_doc = NULL;
 	cmd->next = NULL;
@@ -36,11 +35,15 @@ void assign_fild(t_node *node, t_cmd *cmd, int depth)
 	else
 	{
 		token = create_tok(node->value);
-		token->P = depth;
-		if (node->type == TO_FILE)
+		// token->P = depth;
+		if (node->type == TO_FILE || node->type == TO_TO_FILE)
+		{
 			cmd->to_file = token;
-		else if (node->type == TO_TO_FILE)
-			cmd->to_to_file = token;
+			if (node->type == TO_FILE)
+				token->P = 1;
+			if (node->type == TO_TO_FILE)
+				token->P = 2;
+		}
 		else if (node->type == FROM_FILE)
 			cmd->from_file = token;
 	}
@@ -62,10 +65,8 @@ void build_cmd(t_node *node, t_data *data, int depth, t_token *exist_arg)
 	cmd = data->cmd_list;
 	while (cmd->next)
 		cmd = cmd->next;
-	if (node->type == TO_FILE)
+	if (node->type == TO_FILE || node->type == TO_TO_FILE)
 		exist_arg = cmd->to_file;
-	else if (node->type == TO_TO_FILE)
-		exist_arg = cmd->to_to_file;
 	else if (node->type == FROM_FILE)
 		exist_arg = cmd->from_file;
 	// else if (node->type == HEREDOC)
@@ -90,6 +91,6 @@ void travel_tree(t_node *node,  int depth, t_data *data)
 		add_cmd(data->cmd_list, &data->cmd_qty, data); // nandle |
 	if (node->right)
 		travel_tree(node->right, depth + 1, data);
-	if (node->type > 8 && node->type < 15)
+	if (node->type > 9 && node->type < 16)
 		build_cmd(node, data, depth, NULL);
 }

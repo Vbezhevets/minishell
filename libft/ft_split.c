@@ -48,7 +48,7 @@ static int	qty(char const *s, char c)
 	return (count);
 }
 
-void	free_all(char **new, int w)
+void	free_all_(char **new, int w)
 {
 	while (w >= 0)
 		free(new[w--]);
@@ -73,7 +73,7 @@ char	**ft_split(char *s, char c)
 		l = ft_length(s, c);
 		new[w] = (char *)malloc((l + 1) * sizeof(char));
 		if (new[w] == NULL)
-			return (free_all(new, w--), free(new), NULL);
+			return (free_all_(new, w--), free(new), NULL);
 		ft_strlcpy(new[w], s, l + 1);
 		s = s + l;
 		w++;

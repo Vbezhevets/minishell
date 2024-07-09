@@ -14,6 +14,7 @@ char **add_cmd_arg(char **old, int *qty, char *str)
 		new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(old[i]) + 1));
 		ft_strcpy(new_a[i], old[i]);
 		free(old[i]);
+		old[i] = NULL;
 		i++;
 	}
 	if(old)
@@ -25,10 +26,23 @@ char **add_cmd_arg(char **old, int *qty, char *str)
 	return (new_a);
 }
 
+char **handle_quotes(char *str)
+{
+	char	q1 = '\'';
+	char	q2 = '\"';
+	char	*res;
+
+	if (str[0] == q1 || (str[0] == 2 && !ft_strchr(str, '$')))
+	{
+		res = ft_strtrim(str, &str[0]);
+	}
+
+}
+
 void add_cmd_args(t_node *node, t_cmd *cmd)
 {
 	char 	*arg;
-	char	*quot = "'";
+	// char	*quot = "'";
 
 	arg = node->value;
 	if (node->quot == 1 || (node->quot == 2 && !ft_strchr(node->value, '$')))
@@ -42,3 +56,7 @@ void add_cmd_args(t_node *node, t_cmd *cmd)
 	// }
     cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, arg);
 }
+
+
+// сначала проверяет существование всех входящих файлов в редиректах 
+// потом 

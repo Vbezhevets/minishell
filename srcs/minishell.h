@@ -2,10 +2,16 @@
 # define MINISHELL_H
 
 #include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include <stdarg.h>
+# include <stddef.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 # include "../libft/libft.h"
-
 # define DELIM " \n\t"
 
 typedef enum s_type
@@ -19,10 +25,10 @@ typedef enum s_type
 	RLRL,	//6
 	RDRCT_NODE,//7
 	PIPE,	//8
-	CMD,	//9
-	ARG,	//10
-	EMPTY,	//11
-	CMD_NODE,//12
+	CMD_NODE,//9
+	EMPTY,	//10
+	CMD,	//11
+	ARG,	//12
 	TO_FILE,//13
 	FROM_FILE,//14
 	TO_TO_FILE,//15
@@ -67,15 +73,19 @@ typedef struct s_node
 // }	t_builtins
 
 typedef struct s_cmd
+
 {
-	int		in;
-	int		out;
+	int		bi;
+	int		pid;
+	int		in_fd;
+	int		out_fd;
+	int		num;
 	int		args_qty;
 	int		interp;
 	char	**args;
 	char	*path;
 	t_token	*to_file; //to
-	t_token	*to_to_file; //to
+	// t_token	*to_to_file; //to
 	t_token	*from_file; //from
 	char	*her_doc; //from
 	struct s_cmd	*next;
@@ -86,8 +96,8 @@ typedef struct s_cmd
 typedef struct s_data
 {
 	int		tok_quantity;
-	int		cmd_qty;
-	int		cmd_num;
+	int		cmd_qty;//
+	// int		cmd_num;
 	t_cmd	*cmd_list;
 	t_token	*tok_list;
 	t_node	*tree;
@@ -103,15 +113,15 @@ void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data, t_cmd *prev);
 void 	add_cmd_args(t_node *node, t_cmd *cmd);
-int		exec(t_data *data);
-
+int		handle_cmd(t_data *data, t_cmd *cmd);
+int		exec(t_data *data, t_cmd *cmd);
+int 	builtin(t_cmd *cmd, t_data *data);
 
 void	error(char *str);
-void	free_tree(t_node *node);
-void	free_tok(t_token *token);
+void	free_all(t_data *data);
 void	free_and_null_(char **a);
 
-void print_cmd_fields(t_cmd **cmd_array, int cmd_count);
+void print_cmd_fields(t_cmd **cmd_array, int cmd_count); //remove
 
 
 

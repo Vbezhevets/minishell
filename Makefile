@@ -18,6 +18,7 @@ SRCS  = \
 			${SRCSDIR}/exec_prepare.c \
 			${SRCSDIR}/exec.c \
 			${SRCSDIR}/free_errors.c \
+			${SRCSDIR}/builtins.c \
 			${SRCSDIR}/test.c \
 
 
