@@ -45,7 +45,10 @@ void assign_fild(t_node *node, t_cmd *cmd, int depth)
 				token->P = 2;
 		}
 		else if (node->type == FROM_FILE)
+		{
 			cmd->from_file = token;
+			token->P = 0;
+		}
 	}
 }
 

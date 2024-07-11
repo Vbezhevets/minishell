@@ -116,6 +116,8 @@ void 	handle_cmd_args(t_node *node, t_cmd *cmd);
 int		handle_cmd(t_data *data, t_cmd *cmd);
 int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
+ 
+
 
 void	error(char *str);
 void	free_all(t_data *data);
