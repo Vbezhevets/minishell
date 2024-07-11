@@ -9,19 +9,24 @@ LIBDIR= ./libft
 LIBFT = ${LIBDIR}/libft.a
 
 SRCSDIR     = srcs
+
+BUILTINS_DIR = ${SRCSDIR}/builtins
+CMDS_DIR    = ${SRCSDIR}/cmds
+EXEC_DIR    = ${SRCSDIR}/exec
+PARSER_DIR  = ${SRCSDIR}/parser
+UTILS_DIR   = ${SRCSDIR}/utils
+
 SRCS  = \
 			${SRCSDIR}/main.c \
-			${SRCSDIR}/tokenizer.c \
-			${SRCSDIR}/parser.c \
-			${SRCSDIR}/cmds.c \
-			${SRCSDIR}/cmd_utils.c \
-			${SRCSDIR}/exec_prepare.c \
-			${SRCSDIR}/exec.c \
-			${SRCSDIR}/free_errors.c \
-			${SRCSDIR}/builtins.c \
-			${SRCSDIR}/test.c \
-
-
+			${PARSER_DIR}/tokenizer.c \
+			${PARSER_DIR}/parser.c \
+			${CMDS_DIR}/cmds.c \
+			${CMDS_DIR}/cmd_utils.c \
+			${EXEC_DIR}/exec_prepare.c \
+			${EXEC_DIR}/exec.c \
+			${UTILS_DIR}/free_errors.c \
+			${BUILTINS_DIR}/builtins.c \
+			${UTILS_DIR}/test.c \
 
 OBJSDIR     = ${SRCSDIR}/objs
 OBJS        = $(SRCS:${SRCSDIR}/%.c=${OBJSDIR}/%.o)

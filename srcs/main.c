@@ -43,6 +43,7 @@ int main(int argc, char **argv, char **envp)
 	t_data	*data;
 	char	*input;
 	
+	// printf("%s\n",  ft_strtrim("\"char l*\"", "pidor"));
 	while (1)
 	{
 		data = init_data(data, envp);

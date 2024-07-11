@@ -77,8 +77,8 @@ typedef struct s_cmd
 {
 	int		bi;
 	int		pid;
-	int		in_fd;
-	int		out_fd;
+	int		from_fd;
+	int		to_fd;
 	int		num;
 	int		args_qty;
 	int		interp;
@@ -112,7 +112,7 @@ void 	parser(t_data *data);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data, t_cmd *prev);
-void 	add_cmd_args(t_node *node, t_cmd *cmd);
+void 	handle_cmd_args(t_node *node, t_cmd *cmd);
 int		handle_cmd(t_data *data, t_cmd *cmd);
 int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
