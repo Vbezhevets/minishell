@@ -28,60 +28,6 @@ char	*get_path(char **envp, char *cmd)
 	free(pathes);
 	return (NULL);
 }
-/*
-int from_rdr(char *cwd, t_cmd *cmd)
-{
-	t_token	*file;
-	char	*path;
-
-	file = cmd->from_file;
-	if (!file)
-		return 1;
-	while(file)
-	{
-		path = ft_str3join(cwd, "/", file->value);
-		cmd->from_fd = open(path, O_RDONLY);
-		if (cmd->from_fd < 0)
-			return (free(path), ft_printf("file \"%s\" open error\n", file->value), 0);
-		if (file->next)
-			close(cmd->from_fd);
-		file = file->next;
-		free(path);
-	}
-	if (cmd->from_fd > 0)
-	{
-		dup2(cmd->from_fd, 0);
-		close(cmd->from_fd);
-	}
-	return (1);
-}
-
-int to_rdr(t_cmd *cmd)
-{
-	t_token	*file;
-
-	file = cmd->to_file;
-	if (!file)
-		return 1;
-	while(file)
-	{
-		if (file->P == 2)
-			cmd->to_fd = open(file->value, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-		if (file->P == 1)
-			cmd->to_fd = open(file->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (cmd->to_fd < 0)
-			return (ft_printf("file \"%s\" error\n", file->value), 0);
-		if (file->next)
-			close(cmd->to_fd);
-		file = file->next;
-	}
-	if (cmd->to_fd > 0)
-	{
-		dup2(cmd->to_fd, 1);
-		close(cmd->to_fd);
-	}
-	return (1);
-} */
 
 int is_bltin(t_cmd *cmd)
 {
@@ -112,45 +58,33 @@ int check_cmd(t_cmd **cmd, t_data *data)
 		return (1);
 }
 
-int rdr(t_token *file, char *cwd, t_cmd *cmd, int drct)
+int rdr(t_cmd_field *file, char *cwd, t_cmd *cmd, int drct)
 {
 	char	*path;
-	int		fd = 0;
+	int		fd;
 
 	while(file)
 	{
-		printf("value %s\n", file->value);
 		path = ft_str3join(cwd, "/", file->value);
 		if (file->P == 2)
 			fd = open(file->value, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 		if (file->P == 1)
 			fd = open(file->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (file->P == 0)
-		{
-			printf("trying  %s\n", path );
-			if (access(cmd->path, F_OK) == -1) 
-			{
-				perror("File does not exist");
-				free(path);
-				return 0;
-			}
 			fd = open(path, O_RDONLY);
-		}
 		if (fd < 0)
-			return (free(path), ft_printf("file \"%s\" access error\n", file->value), 0);
+			return (free(path), printf("file \"%s\" access error\n", file->value), 0);
 		if (file->next)
 			close(fd);
 		file = file->next;
 		free(path);
 	}
-	printf("%d\n", fd);
 	if (fd > 0)
 	{
 		dup2(fd, drct);
 		close(fd);
-		return(1);
 	}
-	return (0);
+	return (1);
 }
 
 
@@ -172,15 +106,10 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 			cmd->pid = fork();
 			if (cmd->pid == 0)
 			{
-				// if (from_rdr(cwd, cmd) && to_rdr(cmd))
 				if (rdr(cmd->from_file, cwd, cmd, 0) && rdr(cmd->to_file, cwd, cmd, 1))
-				{
 					exec(data, cmd);
-				}
-				waitpid(-1, NULL, 0);
-				// else 
-				// 	printf("bad redirection\n");
 			}
+				waitpid(-1, NULL, 0);
 		}
 		cmd = cmd->next;
 	}

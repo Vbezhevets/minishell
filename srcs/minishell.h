@@ -12,6 +12,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
+
 # define DELIM " \n\t"
 
 typedef enum s_type
@@ -56,6 +57,16 @@ typedef struct s_token
 	struct	s_token	*prev;
 }	t_token;
 
+typedef struct s_cmd_field
+{
+	t_type				type;
+	char				*value;
+	int	 				length;
+	int					P;//recedence
+	struct	s_cmd_field	*next;
+	struct	s_cmd_field	*prev;
+}	t_cmd_field;
+
 typedef struct s_node
 {
 	t_type			type;
@@ -75,19 +86,19 @@ typedef struct s_node
 typedef struct s_cmd
 
 {
-	int		bi;
-	int		pid;
-	int		from_fd;
-	int		to_fd;
-	int		num;
-	int		args_qty;
-	int		interp;
-	char	**args;
-	char	*path;
-	t_token	*to_file; //to
-	// t_token	*to_to_file; //to
-	t_token	*from_file; //from
-	char	*her_doc; //from
+	int				bi;
+	int				pid;
+	int				from_fd;
+	int				to_fd;
+	int				num;
+	int				args_qty;
+	int				interp;
+	char			**args;
+	char			*path;
+	t_cmd_field		*to_file; //to
+	// t_cmd_field	*to_to_file; //to
+	t_cmd_field		*from_file; //from
+	char			*her_doc; //from
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 
@@ -116,7 +127,9 @@ void 	handle_cmd_args(t_node *node, t_cmd *cmd);
 int		handle_cmd(t_data *data, t_cmd *cmd);
 int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
+t_cmd_field *create_field(char *input_str, int type);
  
+void print_tree(t_node *node, int intent);
 
 
 void	error(char *str);
