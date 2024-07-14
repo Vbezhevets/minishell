@@ -118,7 +118,11 @@ typedef struct s_data
 
 
 
-void	tokenizer(char *input_str, t_data *data);
+// void	tokenizer(char *input_str, t_token **tok_list,  int *tok_qty);
+t_token	*tokenizer(char *input_str);
+
+t_token *expand_tokens(t_token **in_token);
+
 void 	parser(t_data *data);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 t_token	*create_tok(char *input_str);
@@ -128,9 +132,9 @@ int		handle_cmd(t_data *data, t_cmd *cmd);
 int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
 t_cmd_field *create_field(char *input_str, int type);
- 
-void print_tree(t_node *node, int intent);
+int		rdr(t_cmd_field *file, char *cwd, t_cmd *cmd, int drct);
 
+void print_tree(t_node *node, int intent);
 
 void	error(char *str);
 void	free_all(t_data *data);

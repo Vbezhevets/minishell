@@ -24,7 +24,7 @@ void free_tree(t_node *node)
 		free_tree(node->left);
 	if (node->right)
 		free_tree(node->right);
-	if (node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
+	if (node->value)
 	{	
 		free(node->value);
 		node->value = NULL;
@@ -36,12 +36,14 @@ void	free_tok(t_token *token)
 {
 	t_token *temp;
 
-	while (token)
+	while (token && token->next)
 	{
 		temp = token;
 		token = token->next;
-		// free(temp->value);
+		if(temp->value)
+			free(temp->value);
 		free(temp);
+		temp = NULL;
 	}
 }
 

@@ -20,9 +20,10 @@ SRCS  = \
 			${SRCSDIR}/main.c \
 			${PARSER_DIR}/tokenizer.c \
 			${PARSER_DIR}/parser.c \
+			${PARSER_DIR}/quotes_and_expand.c \
 			${CMDS_DIR}/built_cmds.c \
-			${CMDS_DIR}/cmd_utils.c \
 			${CMDS_DIR}/cmd_fields.c \
+			${CMDS_DIR}/redirect.c \
 			${EXEC_DIR}/exec_prepare.c \
 			${EXEC_DIR}/exec.c \
 			${UTILS_DIR}/free_errors.c \

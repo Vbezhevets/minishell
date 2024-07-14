@@ -5,7 +5,11 @@ int echo(char **args, int i)
 	if (!args[1] || !args[1][0])
 		return (printf("\n"), 0);
 	while (args[++i])
-		printf("%s ", args[i]);
+	{
+		printf("%s", args[i]);
+		if(args[i])
+			printf(" ");
+	}
 	printf("\n");
 
 	// if (args[1] = "-n")

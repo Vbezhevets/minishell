@@ -42,20 +42,29 @@ int main(int argc, char **argv, char **envp)
 {
 	t_data	*data;
 	char	*input;
-	
-	// printf("%s\n",  ft_strtrim("\"char l*\"", "pidor"));
+
 	while (1)
 	{
 		data = init_data(data, envp);
-		input = readline("Slava Ukraini! 🇺🇦 >"); 
+
+		if (isatty(fileno(stdin)))
+			input = readline("Slava Ukraini! 🇺🇦 >");
+	// 	else
+	// {
+	// 	char *line;
+	// 	line = get_next_line(fileno(stdin));
+	// 	input = ft_strtrim(line, "\n");
+	// 	free(line);
+	// }
+
 		if (input)
 		{
-			tokenizer(input, data);
+			data->tok_list = tokenizer(input);
 			parser(data);
 			travel_tree(data->tree,  0, data);
 			if(data->cmd_list)
 				handle_cmd(data, data->cmd_list);
-			free_all(data);
+			// free_all(data);
 		}
 
 

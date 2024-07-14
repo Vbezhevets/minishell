@@ -40,6 +40,7 @@ void *parse_redir(t_token **token, t_node *left)
 {
 	t_node	*rdr_node;
  
+	*token = expand_tokens(token);
 	if (!(*token)->next || (*token)->next->type > 2)
 		error("wrong redirect");
 	while(left && left->left)
@@ -50,7 +51,7 @@ void *parse_redir(t_token **token, t_node *left)
 	rdr_node->left->left = tok_to_nod(*token);
 	*token = (*token)->next;
 	*token = (*token)->next;
-	if (*token && (*token)->P == 2)
+	if (*token && (*token)->P == 2) // also "$"
 		rdr_node->right = parse_redir(token, left); // return
 	return rdr_node;
 }
@@ -61,6 +62,7 @@ void parse_cmd(t_token **token, t_node **right)
 
 	while((*token) && ((*token)->type < 3))
 	{
+		*token = expand_tokens(token);
 		if (!*right)
 		{
 			*right = tok_to_nod(*token);
@@ -97,12 +99,11 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 	parse_cmd_node(token, cmd_node);
 }
 
-t_node *parse_loop(t_token **token, t_node *cmd_node)
+t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 {
-	t_node *pipe_node;
-
 	while (*token)
 	{
+		*token = expand_tokens(token);
 		if (*token && (*token)->P < 3)
 		{
 			cmd_node = create_node(CMD_NODE);
@@ -117,7 +118,7 @@ t_node *parse_loop(t_token **token, t_node *cmd_node)
 			*token = (*token)->next;
 			if (!*token || ((*token)->P != 1 && (*token)->P != 2))
 				return (error("wrong input"), NULL);
-			pipe_node->right = parse_loop(token, NULL);
+			pipe_node->right = parse_loop(token, NULL, NULL);
 			return(pipe_node);
 		}
 		else
@@ -127,14 +128,12 @@ t_node *parse_loop(t_token **token, t_node *cmd_node)
 }
 
 
-
-
 void parser(t_data *data) 
 {
 	t_token *start;
 
 	start = data->tok_list;
-	data->tree = parse_loop(&start, NULL);
+	data->tree = parse_loop(&start, NULL, NULL);
 	
-	print_tree(data->tree, 0);
+	// print_tree(data->tree, 0);
 }

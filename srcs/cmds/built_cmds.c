@@ -33,6 +33,58 @@ void add_cmd(t_cmd *cmd, t_data *data)
 	cmd->next = init_cmd(data, cmd);
 }
 
+char **add_cmd_arg(char **old, int *qty, char *str)
+{
+	int i;
+	
+	char **new_a;
+
+	new_a = (char **)malloc((*qty + 2) * sizeof(char*));
+    // if (!new_a)
+	i = 0;
+	while (i < *qty)
+	{
+		new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(old[i]) + 1));
+		//if (!new_a[i])
+		ft_strcpy(new_a[i], old[i]);
+		// free(old[i]);
+		// old[i] = NULL;
+		i++;
+	}
+	if(old)
+		free_and_null_(old);
+	new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
+	//if
+	ft_strcpy(new_a[i], str);
+	new_a[i + 1] = NULL;
+    *qty = *qty + 1;
+	return (new_a);
+}
+
+t_cmd_field *create_field(char *input_str, int type)
+{
+	t_cmd_field *field;
+
+	field = (t_cmd_field *)malloc(sizeof(t_cmd_field));
+	// if (!field->value)
+	// 	return (free_tok(field), exit(1), NULL); //handle exit in error.c
+	field->length = ft_strlen(input_str);
+	field->value = (char *)malloc((field->length + 1) * sizeof(char));
+	// if (field->value == NULL)
+	// 	return (free_tok(field), exit(1), NULL); //handle exit
+	ft_strlcpy(field->value, input_str, field->length + 1);
+    field->type = type;
+	field->next = NULL;
+	field->prev = NULL;
+	if (type == TO_FILE)
+		field->P = 1;
+    if (type == TO_TO_FILE)
+		field->P = 2;
+    if (type == FROM_FILE)
+		field->P = 0;
+	return (field);
+}
+
 void assign_fild(t_node *node, t_cmd *cmd)
 {
 	t_cmd_field *field;
@@ -41,7 +93,7 @@ void assign_fild(t_node *node, t_cmd *cmd)
 		handle_cmd_args(node, cmd);
 	else
 	{
-		field = create_field(node->value, node->type);
+		field = create_field(node->value, node->type); // check ""
 		if (node->type == TO_FILE || node->type == TO_TO_FILE)
 			cmd->to_file = field;
 		else if (node->type == FROM_FILE)
@@ -57,7 +109,7 @@ void build_cmd(t_node *node, t_data *data, t_cmd *cmd, t_cmd_field *exist_arg)
 	while (cmd->next)
 		cmd = cmd->next;
 	if (node->type == TO_FILE || node->type == TO_TO_FILE)
-		exist_arg = cmd->to_file;
+		exist_arg = cmd->to_file; 
 	else if (node->type == FROM_FILE)
 		exist_arg = cmd->from_file;
 	// else if (node->type == HEREDOC)
@@ -70,6 +122,20 @@ void build_cmd(t_node *node, t_data *data, t_cmd *cmd, t_cmd_field *exist_arg)
 			exist_arg = exist_arg->next;
 		exist_arg->next = create_field(node->value, node->type);
 	}
+}
+
+void handle_cmd_args(t_node *node, t_cmd *cmd)
+{
+	char 	*arg;
+	
+	// ft_strchr(node->value, '='); //!!!!!!!!!!!!!!!!
+
+	// arg = handle_quotes(node->value);
+
+    cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);
+
+
+	
 }
 
 void travel_tree(t_node *node,  int depth, t_data *data)
@@ -85,3 +151,5 @@ void travel_tree(t_node *node,  int depth, t_data *data)
 	if (node->type > 9 && node->type < 16)
 		build_cmd(node, data, NULL, NULL);
 }
+
+
