@@ -89,7 +89,7 @@ int precedence(t_token *token)
 	return 0;
 } 
 
-t_token *create_tok(char *input_str)
+t_token *create_tok(char *input_str, data)
 {
 	t_token *token;
 
@@ -105,6 +105,7 @@ t_token *create_tok(char *input_str)
 	token->next = NULL;
 	token->prev = NULL;
 	token->P = precedence(token);
+	token->data = data;
 	return (token);
 }
 /*
@@ -135,7 +136,7 @@ void	tokenizer(char *input_str, t_token **tok_list,  int *tok_qty)
 }
 */
 
-t_token	*tokenizer(char *input_str)
+t_token	*tokenizer(char *input_str, t_data *data)
 {
 	t_token	*token;
 	t_token	*tok_list;
@@ -149,12 +150,12 @@ t_token	*tokenizer(char *input_str)
 			return (NULL);
 		if (!tok_list)
 		{
-			tok_list = create_tok(input_str);
+			tok_list = create_tok(input_str, data);
 			token = tok_list;
 		}
 		else
 		{
-			token->next = create_tok(input_str);
+			token->next = create_tok(input_str, data);
 			token->next->prev = token;
 			token = token->next;
 		}

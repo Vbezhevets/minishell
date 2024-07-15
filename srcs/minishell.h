@@ -14,6 +14,7 @@
 # include "../libft/libft.h"
 
 # define DELIM " \n\t"
+# define DELIMQ " \n\t\"\'"
 
 typedef enum s_type
 {
@@ -46,6 +47,7 @@ static const char *const builtins[] = {
 	"exit"
 };
 
+struct s_data;
 
 typedef struct s_token
 {
@@ -55,6 +57,7 @@ typedef struct s_token
 	int				P;//recedence
 	struct	s_token	*next;
 	struct	s_token	*prev;
+	struct	s_data	*data;
 }	t_token;
 
 typedef struct s_cmd_field
@@ -104,6 +107,12 @@ typedef struct s_cmd
 
 }	t_cmd;
 
+typedef struct s_var
+{
+	char	*key;
+	char	*value;
+} t_var;
+
 typedef struct s_data
 {
 	int		tok_quantity;
@@ -114,18 +123,19 @@ typedef struct s_data
 	t_node	*tree;
 	int		pipe[2];
 	char	**envp;
+	t_var	*var;
 }	t_data;
 
 
 
 // void	tokenizer(char *input_str, t_token **tok_list,  int *tok_qty);
-t_token	*tokenizer(char *input_str);
+t_token	*tokenizer(char *input_str, t_data *data);
 
 t_token *expand_tokens(t_token **in_token);
 
 void 	parser(t_data *data);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
-t_token	*create_tok(char *input_str);
+// t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data, t_cmd *prev);
 void 	handle_cmd_args(t_node *node, t_cmd *cmd);
 int		handle_cmd(t_data *data, t_cmd *cmd);

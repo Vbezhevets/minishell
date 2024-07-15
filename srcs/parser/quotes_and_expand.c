@@ -33,38 +33,60 @@ char *handle_quotes(char *str)
 	else
 	 	return str;
 }
-char *expand_str(char **input)
+char *expand_str(char *input)
 {
 	char *res;
 
-	res = handle_quotes(*input);
+	res = handle_quotes(input);
 	
-	if (res == *input)
-		return (*input);
+	if (res == input)
+		return (input);
 	else 
-		return (free(*input), *input = NULL, (res));
+		return (free(input), input = NULL, (res));
 }
 int ft_strset(char *str, char *set)
 {
 	char	*b;
+	int		i;
 
+	i = 0;
 	while (*set)
 	{
-		b = str;
-		while (*b)
+		while (str[i])
 		{
-			if (*b == *set)
-				return (1);
-			b++;
+			if (str[i] == *set)
+				return (i);
+			i++;
 		}	
 		set++;
+		i = 0;
 	}
-	return 0;
+	return i;
 }
+char *expand_var(char *str, t_data *data)
+{
+	char	*res;
+	char	*new;
+	int		i;
+	int		count;
+	
+	i = 0;
+	res = expand_str(str);
+	while(*res)
+	{
+		if (*res == '$')
+			while (res[i] && (ft_isalnum(res[i]) || res[i] == '_'))
+				i++;
+		data_
+		*new = *res;
+		new++;
+		res++;
+	}
+}
+
 // есть смысл все раскрыть в одну строку а затем ее пропустить еще раз через токенайзер? и прицепить все токены к текущему?
 t_token *expand_tokens(t_token **in_token)
 {
-	t_token	*token;
 	t_token	*next;
 	t_token	*expanded_tokens_list;
 
@@ -72,11 +94,11 @@ t_token *expand_tokens(t_token **in_token)
 		return (*in_token);
 	else if (!ft_strchr((*in_token)->value, '$'))
 	{
-		(*in_token)->value = (expand_str(&(*in_token)->value));
+		(*in_token)->value = (expand_str((*in_token)->value));
 		return (*in_token);
 	}
 	else
-	 	expanded_tokens_list = tokenizer(expand_str(&(*in_token)->value));
+	 	expanded_tokens_list = tokenizer(expand_var((*in_token)->value, (*in_token)->data), (*in_token)->data);
 	if ((*in_token)->prev)
 		(*in_token)->prev->next = expanded_tokens_list;
 	expanded_tokens_list->prev = (*in_token)->prev;
