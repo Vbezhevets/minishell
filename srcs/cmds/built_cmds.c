@@ -32,11 +32,33 @@ void add_cmd(t_cmd *cmd, t_data *data)
 		cmd = cmd->next;
 	cmd->next = init_cmd(data, cmd);
 }
+/*
+void *add_to_array(void *old_a, int *qty, void *elem, size_t size)
+{
+	int	i;
+	void *new_a;
+
+	new_a = malloc((*qty + 2) * sizeof(size));
+	i = 0;
+	while (i < *qty)
+	{
+		new_a[i] = malloc(sizeof(old_a[i]));
+		//if (!new_a[i])
+		memcpy(new_a[i], old_a[i], sizeof(void));
+		// free(old[i]);
+		// old[i] = NULL;
+		i++;
+	}
+	new_a[i] = (void *)malloc(sizeof(old_a[i]));
+	memcpy(new_a[i], old_a[i], sizeof(void));
+	new_a[i + 1] = NULL;
+    *qty = *qty + 1;
+	return (new_a);
+} */
 
 char **add_cmd_arg(char **old, int *qty, char *str)
 {
 	int i;
-	
 	char **new_a;
 
 	new_a = (char **)malloc((*qty + 2) * sizeof(char*));

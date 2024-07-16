@@ -89,7 +89,7 @@ int precedence(t_token *token)
 	return 0;
 } 
 
-t_token *create_tok(char *input_str, data)
+t_token *create_tok(char *input_str, t_data *data)
 {
 	t_token *token;
 

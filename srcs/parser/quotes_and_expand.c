@@ -7,7 +7,7 @@ char *del_quotes(char *str, char q)
 	char	*b;
 	
 	res = (char *)malloc(sizeof(ft_strlen(str) - 1 ));
-	// if (!res)
+	// if (!res)`
 	b = res;
 	str++;
 	while (*(str + 1))
@@ -22,23 +22,17 @@ char *del_quotes(char *str, char q)
 }
 //copy just symbls <- выделаить память: <- посчитать сколько <- 
 
-char *handle_quotes(char *str)
-{
-	char	q1 = '\'';
-	char	q2 = '\"';
-	char	*res;
 
-	if (str[0] == q1 || (str[0] == q2 && !ft_strchr(str, '$')))
-		res = del_quotes(str, str[0]);
-	else
-	 	return str;
-}
 char *expand_str(char *input)
 {
 	char *res;
 
-	res = handle_quotes(input);
+	char	q1 = '\'';
+	char	q2 = '\"';
+
 	
+	if (input[0] == q1 || (input[0] == q2 && !ft_strchr(input, '$')))
+		res = del_quotes(input, input[0]);
 	if (res == input)
 		return (input);
 	else 
@@ -55,7 +49,7 @@ int ft_strset(char *str, char *set)
 		while (str[i])
 		{
 			if (str[i] == *set)
-				return (i);
+				return (1);
 			i++;
 		}	
 		set++;
@@ -63,25 +57,52 @@ int ft_strset(char *str, char *set)
 	}
 	return i;
 }
+
+char *exp_var(char *var_name, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	/*
+	while (data->var[i].key)
+	{
+		if (!ft_strncmp(data->var[i].key, var_name, ft_strlen(var_name)))
+			return (data->var[i].value);
+		i++;
+	}
+	printf ("%s is ", var_name);
+	error("wrong var name"); */
+	return (NULL);
+}
+
 char *expand_var(char *str, t_data *data)
 {
 	char	*res;
+	char	*unq;
+	char	*var_name;
+	char	*var_val;
 	char	*new;
 	int		i;
-	int		count;
 	
 	i = 0;
-	res = expand_str(str);
-	while(*res)
+	unq = expand_str(str);
+	res = NULL;
+	while(*unq)
 	{
-		if (*res == '$')
-			while (res[i] && (ft_isalnum(res[i]) || res[i] == '_'))
+		if (unq[i] == '$')
+		{
+			i++;
+			while (unq[i] && (ft_isalnum(unq[i]) || unq[i] == '_'))
 				i++;
-		data_
-		*new = *res;
-		new++;
-		res++;
+			var_name = ft_substr(unq, 0, i);
+			var_val = exp_var(var_name, data);
+			res = ft_strjoin(res, var_val);
+			free(var_name);
+			free(var_val);
+		}
+		unq++;
 	}
+	return (res);
 }
 
 // есть смысл все раскрыть в одну строку а затем ее пропустить еще раз через токенайзер? и прицепить все токены к текущему?

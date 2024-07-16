@@ -38,6 +38,7 @@ typedef enum s_type
 }	t_type;
 
 static const char *const builtins[] = {
+	"export",
 	"echo",
 	"cd",
 	"pwd",
@@ -123,7 +124,8 @@ typedef struct s_data
 	t_node	*tree;
 	int		pipe[2];
 	char	**envp;
-	t_var	*var;
+	int		envpc;
+	t_var	**var;
 }	t_data;
 
 
@@ -143,6 +145,8 @@ int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
 t_cmd_field *create_field(char *input_str, int type);
 int		rdr(t_cmd_field *file, char *cwd, t_cmd *cmd, int drct);
+
+int envpcpy(t_var **var, char **src_envp, int add, char **add_var);
 
 void print_tree(t_node *node, int intent);
 
