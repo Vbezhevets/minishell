@@ -1,55 +1,53 @@
 #include "minishell.h"
 
-//int read_from_u
+int read_from_u
 
 void add_env_var(t_var *var, char **add_var)
 {
+	char	**temp;
+	
+	temp = ft_split(src_envp[i], '=');
+		if (!temp)
+			break; //error? освободить все вышезаписанное
+		// free_and_null_(temp);
+		free(temp);
+
 	var->key = ft_strdup(add_var[0]);
 	var->value = ft_strdup(add_var[1]);
 	// плюс пересобрать data->envp
 }
 
-int envpcpy(t_var **var, char **src_envp, int add, char **add_var)
+int envpcpy(t_data *data, char **src_envp, char ***dst_envp)
 {
-	char	**temp;
 	int		i;
-
+	
 	i = 0;
 	while(src_envp[i])
 		i++;
-	
-	data->envp = (char **)malloc((sizeof(char *) * (i + add + 1)));
-	
-	var = (t_var **)malloc(sizeof(t_var *) * (i + add + 1));
+	*dst_envp = (char **)malloc((sizeof(char *) * (i + 1)));
 	// if (!data-> error? освободить все вышезаписанное
 	i = 0;
 	while (src_envp[i])
 	{
-		data->envp[i] = (char *)malloc(sizeof(char) * (ft_strlen(src_envp[i]) + 1));
-		ft_strcpy(data->envp[i], src_envp[i]);
-		temp = ft_split(src_envp[i], '=');
-	
-		if (!temp)
-			break; //error? освободить все вышезаписанное
-		var[i] = (t_var *)malloc(sizeof(t_var));
-		var[i]->key = temp[0];
-		var[i]->value = temp[1];
-		// free_and_null_(temp);
-		free(temp);
+		(*dst_envp)[i] = (char *)malloc(sizeof(char) * (ft_strlen(src_envp[i]) + 1));
+		ft_strcpy((*dst_envp)[i], src_envp[i]);
 		i++;
-		data->envp[i] = NULL;
 	}
-	if (add_var)
-		add_env_var(var[i], add_var);
-	var[i + add] = NULL;
+	(*dst_envp)[i] = NULL;
+	return (0);
 }
 
-t_data *init_data(t_data *data, char **envp)
+t_data *init_data(t_data *data, char **sys_envp)
 {
+	int	i;
+
 	data = (t_data *)malloc(sizeof(t_data));
 	if (!data)
 		exit(1);
-	data->envpc = envpcpy(data->var, envp, 0, NULL);
+	i = 0;
+	while(sys_envp[i])
+		i++;
+	data->envpc = envpcpy(data, sys_envp, &data->envp);
 	data->tok_quantity = 0;
 	data->cmd_qty = 0;
 	data->tok_list = NULL;

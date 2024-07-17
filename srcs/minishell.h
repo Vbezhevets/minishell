@@ -110,8 +110,9 @@ typedef struct s_cmd
 
 typedef struct s_var
 {
-	char	*key;
-	char	*value;
+	char			*key;
+	char			*value;
+	struct s_var	*next;
 } t_var;
 
 typedef struct s_data
@@ -125,7 +126,7 @@ typedef struct s_data
 	int		pipe[2];
 	char	**envp;
 	int		envpc;
-	t_var	**var;
+	t_var	*var;
 }	t_data;
 
 
@@ -146,7 +147,7 @@ int 	builtin(t_cmd *cmd, t_data *data);
 t_cmd_field *create_field(char *input_str, int type);
 int		rdr(t_cmd_field *file, char *cwd, t_cmd *cmd, int drct);
 
-int envpcpy(t_var **var, char **src_envp, int add, char **add_var);
+int envpcpy(t_data *data, char **src_envp, char ***dst_envp);
 
 void print_tree(t_node *node, int intent);
 
