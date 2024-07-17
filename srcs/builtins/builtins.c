@@ -1,6 +1,7 @@
 #include "../minishell.h"
 #include <stdio.h>
-
+// value может быть пустым NULL
+//declare x??
 int	add_new_var(t_data *data, int i, t_cmd *cmd)
 {
 	data->envpc = envpcpy(data->var, data->var, 0, NULL);
@@ -16,7 +17,7 @@ int export(t_data *data, t_cmd *cmd)
 	char *new_str;
 	int	i;
 
-	if (cmd->args_qty < 4)
+	if (cmd->args_qty < 4) // убрать долждна работать и без второго аргумента
 	 	return (1);
 	name = cmd->args[1];
 	if (ft_strncmp(cmd->args[2], "=", 1))

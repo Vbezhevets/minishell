@@ -6,6 +6,7 @@ void add_env_var(t_var *var, char **add_var)
 {
 	var->key = ft_strdup(add_var[0]);
 	var->value = ft_strdup(add_var[1]);
+	// плюс пересобрать data->envp
 }
 
 int envpcpy(t_var **var, char **src_envp, int add, char **add_var)
@@ -16,12 +17,18 @@ int envpcpy(t_var **var, char **src_envp, int add, char **add_var)
 	i = 0;
 	while(src_envp[i])
 		i++;
+	
+	data->envp = (char **)malloc((sizeof(char *) * (i + add + 1)));
+	
 	var = (t_var **)malloc(sizeof(t_var *) * (i + add + 1));
 	// if (!data-> error? освободить все вышезаписанное
 	i = 0;
 	while (src_envp[i])
 	{
+		data->envp[i] = (char *)malloc(sizeof(char) * (ft_strlen(src_envp[i]) + 1));
+		ft_strcpy(data->envp[i], src_envp[i]);
 		temp = ft_split(src_envp[i], '=');
+	
 		if (!temp)
 			break; //error? освободить все вышезаписанное
 		var[i] = (t_var *)malloc(sizeof(t_var));
@@ -30,6 +37,7 @@ int envpcpy(t_var **var, char **src_envp, int add, char **add_var)
 		// free_and_null_(temp);
 		free(temp);
 		i++;
+		data->envp[i] = NULL;
 	}
 	if (add_var)
 		add_env_var(var[i], add_var);
