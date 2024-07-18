@@ -95,8 +95,9 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 	else if (*token && (*token)->P == 1) // word
 		parse_cmd(token, &cmd_node->right);
 	else 
-		{printf("%d\n", (*token)->P); error("wrong input!!"); }
-	parse_cmd_node(token, cmd_node);
+		error("wrong input!!");
+	return (cmd_node);
+	// parse_cmd_node(token, cmd_node);
 }
 
 t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
@@ -135,5 +136,5 @@ void parser(t_data *data)
 	start = data->tok_list;
 	data->tree = parse_loop(&start, NULL, NULL);
 	
-	// print_tree(data->tree, 0);
+	print_tree(data->tree, 0);
 }
