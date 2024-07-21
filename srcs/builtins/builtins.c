@@ -3,41 +3,6 @@
 
 // value может быть пустым NULL
 //declare x 
-int	add_new_var(t_var *var, char *var_str, t_data *data)
-{
-	char **temp;
-	char **temp_envp;
-	int	i;
-	i = 0;
-
-	temp = ft_split(var_str, '=');
-	// if (!temp)
-		//printf("wrong variable arguments\n"); exit
-	i = 0;
-	while (temp[0][i])
-	{
-		if (!ft_isalnum(temp[0][i]) && temp[0][i] != '_')
-			return (printf("%s is wrong variable name\n", temp[0]), 1);
-		i++;
-	}
-	temp_envp = (char **)malloc((sizeof(char *) * (data->envpc + 1)));
-	// if 
-	i = 0;
-	while (i < data->envpc)
-	{
-
-		temp_envp[i] = ft_strdup(data->envp[i]);
-		free(data->envp[i]);
-		i++;
-	}
-	free(data->envp);
-	printf("get str: %s\n", var_str);
-	temp_envp[i] = ft_strdup(var_str);
-	temp_envp[i + 1] = NULL;
-	data->envpc++;
-	envpcpy(data, temp_envp, &data->envp, var);
-	return (0);
-}
 
 void print_env(t_data *data)
 {
@@ -81,6 +46,58 @@ int env(t_data *data)
 	return (0);
 }
 
+int	check_var(char *new_var)
+{
+	char **temp;
+	int	i;
+	int wrong;
+
+	wrong = 0;
+	i = 0;
+	temp = ft_split(new_var, '=');
+	if (!temp)
+		return (printf("wrong variable arguments\n"), 1);
+	if (ft_isdigit(temp[0][0]))
+		wrong++;
+	else 
+		while (temp[0][i])
+		{
+			if (!ft_isalnum(temp[0][i]) && temp[0][i] != '_')
+				{
+					wrong++;
+					break;
+				}
+			i++;
+		}
+	if (wrong)
+		printf("%s is wrong variable name\n", temp[0]);
+	free_and_null_(temp);
+	return(free(temp), wrong);
+}
+int	add_new_envp_str(t_var *var, char *new_var, t_data *data)
+{
+	char **temp_envp;
+	int	i;
+
+	if (check_var(new_var))
+		return (1);
+	temp_envp = (char **)malloc((sizeof(char *) * (data->envpc + 1)));
+	// if 
+	i = 0;
+	while (i < data->envpc)
+	{
+		temp_envp[i] = ft_strdup(data->envp[i]);
+		free(data->envp[i]);
+		i++;
+	}
+	free(data->envp);
+	temp_envp[i] = ft_strdup(new_var);
+	temp_envp[i + 1] = NULL;
+	data->envpc++;
+	envpcpy(data, temp_envp, &data->envp, var);
+	return (0);
+}
+
 int export(t_cmd *cmd, t_data *data)
 {
 	int		i;
@@ -94,24 +111,20 @@ int export(t_cmd *cmd, t_data *data)
 	i = 0;
 	while (var && var->key)
 	{
-		// printf("%s                                     k\n", var->key);
-		// printf("%p                                     p\n", var);
-
-
-
-		if (!ft_strncmp(var->key, temp[0], ft_strlen(temp[0])))
+		if (!ft_strncmp(var->key, temp[0], ft_strlen(temp[0])) &&  (ft_strlen(temp[0]) == ft_strlen(var->key)))
 		{
 			free(data->var->value);
 			var->value = ft_strdup(temp[1]);
 			free(data->envp[i]);
-			data->envp[i] = ft_str3join(var->key, "=", var->value);
+			data->envp[i] = cmd->args[1];
+			free(temp[0]);
 			free(temp);
 			return (0);
 		}   
 		var = var->next;
 		i++;
 	}
-	return (add_new_var(var, cmd->args[1], data));
+	return (add_new_envp_str(data->var, cmd->args[1], data));
 }
  
 

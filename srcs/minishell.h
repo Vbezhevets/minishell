@@ -136,6 +136,7 @@ t_token	*tokenizer(char *input_str, t_data *data);
 
 t_token *expand_tokens(t_token **in_token);
 
+t_token *create_tok(char *input_str, t_data *data);
 void 	parser(t_data *data);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 // t_token	*create_tok(char *input_str);

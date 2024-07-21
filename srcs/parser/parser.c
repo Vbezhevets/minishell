@@ -135,6 +135,6 @@ void parser(t_data *data)
 
 	start = data->tok_list;
 	data->tree = parse_loop(&start, NULL, NULL);
-	
+
 	print_tree(data->tree, 0);
 }

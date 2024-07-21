@@ -128,7 +128,7 @@ void build_cmd(t_node *node, t_data *data, t_cmd *cmd, t_cmd_field *exist_arg)
 	if (data->cmd_qty == 0)
 		data->cmd_list = init_cmd(data, NULL); // new
 	cmd = data->cmd_list;
-	while (cmd->next)
+	while (cmd && cmd->next)
 		cmd = cmd->next;
 	if (node->type == TO_FILE || node->type == TO_TO_FILE)
 		exist_arg = cmd->to_file; 

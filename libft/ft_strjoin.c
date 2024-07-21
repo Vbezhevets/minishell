@@ -51,12 +51,21 @@ char	*ft_str3join(char *a, char *b, char *c)
 	if (new == NULL)
 		return (NULL);
 	ret = new;
-	while (*a != '\0')
-		(*new++ = *a++);
-	while (*b != '\0')
-		(*new++ = *b++);
-	while (*c != '\0')
-		*new++ = *c++;
+	if (a)
+	{
+		while (*a != '\0')
+			(*new++ = *a++);
+	}
+	if (b)
+	{
+		while (*b != '\0')
+			(*new++ = *b++);
+	}
+	if (c)
+	{
+		while (*c != '\0')
+			*new++ = *c++;
+	}
 	*new = '\0';
 	return (ret);
 }

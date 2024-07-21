@@ -28,6 +28,7 @@ SRCS  = \
 			${EXEC_DIR}/exec.c \
 			${UTILS_DIR}/free_errors.c \
 			${BUILTINS_DIR}/builtins.c \
+			${BUILTINS_DIR}/env.c \
 			${UTILS_DIR}/test.c \
 
 OBJSDIR     = ${SRCSDIR}/objs
