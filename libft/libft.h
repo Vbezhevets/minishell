@@ -6,7 +6,7 @@
 /*   By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 12:37:06 by bvalerii          #+#    #+#             */
-/*   Updated: 2024/07/18 18:59:33 by bvalerii         ###   ########.fr       */
+/*   Updated: 2024/07/23 13:37:33 by bvalerii         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ char	*ft_strdup(char *src);
 char	*ft_substr(char *s, unsigned int start, size_t len);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_str3join(char *a, char *b, char *c);
+char	*free_join(char *a, char *b);
 char	*ft_strtrim(char *s1, char *set);
 char	**ft_split(char *s, char c);
 char	*ft_itoa(int n);

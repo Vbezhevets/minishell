@@ -1,62 +1,6 @@
 #include "../minishell.h"
 #include <stdlib.h>
 
-char *del_quotes(char *str, char q)
-{
-	char	s;
-	char	*res;
-	char	*b;
-	
-	res = (char *)malloc(sizeof(ft_strlen(str) + 1 ));
-	// if (!res)`
-	b = res;
-	str++;
-	while (*(str + 1))
-	{
-		*res = *str;
-		res++;
-		str++;
-	}
-	*res = '\0';
-
-	return b;
-}
-//copy just symbls <- выделаить память: <- посчитать сколько <- 
-
-
-char *expand_str(char *input)
-{
-	char *res;
-
-	char	q1 = '\'';
-	char	q2 = '\"';
-
-	
-	if (input[0] == q1 || (input[0] == q2))// && !ft_strchr(input, '$')))
-		res = del_quotes(input, input[0]);
-	else
-		return (input);
-	return (free(input), input = NULL, (res));
-}
-int ft_strset(char *str, char *set)
-{
-	char	*b;
-	int		i;
-
-	i = 0;
-	while (*set)
-	{
-		while (str[i])
-		{
-			if (str[i] == *set)
-				return (1);
-			i++;
-		}	
-		set++;
-		i = 0;
-	}
-	return i;
-}
 
 char *exp_var(char *var_name, t_data *data)
 {
@@ -68,8 +12,7 @@ char *exp_var(char *var_name, t_data *data)
 	
 	while (var)
 	{
-		if (!ft_strncmp(var->key, var_name, ft_strlen(var_name)) &&
-			 (ft_strlen(var_name) == (ft_strlen(var->key))))
+		if (strnlcmp(var->key, var_name))
 			return (var->value);
 		var = var->next;
 	}
@@ -111,7 +54,7 @@ char *expand_var(char *str, t_data *data)
 			k = i;
 			while (unq[k] && (ft_isalnum(unq[k]) || unq[k] == '_'))
 				k++;
-			var_name = ft_substr(unq, i, k);
+			var_name = ft_substr(unq, i, k - 1);
 	 		var_val = exp_var(var_name, data);
 			free(var_name);
 			res = new;
@@ -122,7 +65,7 @@ char *expand_var(char *str, t_data *data)
 				free(temp);
 			// free(var_val);
 		}
-		unq = (unq + i + k);
+		unq = (unq + k);
 		i = 0;
 	}
 	return (new);
@@ -132,7 +75,7 @@ char *expand_var(char *str, t_data *data)
 t_token *expand_tokens(t_token **in_token)
 {
 	t_token	*next;
-	t_token	*expanded_tokens_list;
+	t_token	*expanded_tokens;
 	t_data	*data; 
 
 	data = (*in_token)->data;
@@ -144,23 +87,29 @@ t_token *expand_tokens(t_token **in_token)
 		return (*in_token);
 	}
 	else
-	 	expanded_tokens_list = tokenizer(expand_var((*in_token)->value, data), data);
+	 	expanded_tokens = tokenizer(expand_var((*in_token)->value, data), data);
+	if (!expanded_tokens)
+		expanded_tokens = create_tok("", data);
 	if ((*in_token)->prev) // means not first
 	{
-		(*in_token)->prev->next = expanded_tokens_list;
-		expanded_tokens_list->prev = (*in_token)->prev;
+		(*in_token)->prev->next = expanded_tokens;
+		expanded_tokens->prev = (*in_token)->prev;
 	}
 	else
-		data->tok_list = expanded_tokens_list;
-	next = expanded_tokens_list;
-	while (next->next)
-		next = next->next;
-	next->next = (*in_token)->next;
+		data->tok_list = expanded_tokens;
+	if ((*in_token)->next)
+	{
+		(*in_token)->next->prev = expanded_tokens;
+		next = expanded_tokens;
+		while (next->next)
+			next = next->next;
+		next->next = (*in_token)->next;
+	}
 	// free((*in_token)->value);
 	// 	(*in_token)->value = NULL;
 	free(*in_token);
 		*in_token = NULL;
-	return (expanded_tokens_list);
+	return (expanded_tokens);
 }
 
 // сначала проверяет существование всех входящих файлов в редиректах 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: v <v@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 12:48:44 by bvalerii          #+#    #+#             */
-/*   Updated: 2024/01/04 15:33:24 by v                ###   ########.fr       */
+/*   Updated: 2024/07/23 15:39:11 by bvalerii         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,33 @@ char	*ft_str3join(char *a, char *b, char *c)
 		while (*c != '\0')
 			*new++ = *c++;
 	}
+	*new = '\0';
+	return (ret);
+}
+char	*free_join(char *a, char *b)
+{
+	char	*new;
+	char	*ret;
+	char	*beg_a;
+
+	beg_a = a;
+	new = malloc((ft_strlen(a) + ft_strlen(b) + 1)
+			* sizeof(char));
+	if (new == NULL)
+		return (NULL);
+	ret = new;
+	if (a)
+	{
+		while (*a != '\0')
+			(*new++ = *a++);
+	}
+	if (b)
+	{
+		while (*b != '\0')
+			(*new++ = *b++);
+	}
+	free(beg_a);
+	a = NULL;
 	*new = '\0';
 	return (ret);
 }

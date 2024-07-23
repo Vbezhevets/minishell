@@ -62,12 +62,12 @@ static int	ft_length(char *s)
 	while (*s && !ft_strchr(DELIM, *s))
 	{
 		if (quot_detect(s) != 1)
-			return (quoted(s));
+			s += quoted(s);
 		if (tok_detect(s) == RLRL || tok_detect(s) == LRLR)
 			l = 2;
 		else if (tok_detect(s) == RL || tok_detect(s) == LR || tok_detect(s) == PIPE)
 			l = 1;
-		if (l != 0 && !(s-start)) //  возрашаем значение редиректа
+		if (l != 0 && !(s - start)) //  возрашаем значение редиректа
 			return (l);
 		if (l != 0 && (s - start)) // возврашаем значение перед редиерктом
 			return (s - start);

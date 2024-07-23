@@ -36,7 +36,7 @@ int is_bltin(t_cmd *cmd)
 	i = 6;
 	while (i >= 0)
 	{
-		if (!ft_strncmp(cmd->args[0], builtins[i], ft_strlen((char *)builtins[i])))
+		if (strnlcmp(cmd->args[0], (char *)builtins[i]))
 			{
 				cmd->bi = 1;
 				return i + 1;
