@@ -128,6 +128,7 @@ typedef struct s_data
 	t_node	*tree;
 	int		pipe[2];
 	char	**envp;
+	char	cwd[8192];
 	int		envpc;
 	t_var	*var;
 }	t_data;

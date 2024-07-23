@@ -60,7 +60,7 @@ void parse_cmd(t_token **token, t_node **right)
 {
 	t_node *temp;
 
-	while((*token) && ((*token)->type < 3))
+	while((*token) && ((*token)->type < 3)) // word or feilds in quotes
 	{
 		*token = expand_tokens(token);
 		if (!*right)
@@ -96,15 +96,15 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 		parse_cmd(token, &cmd_node->right);
 	else 
 		error("wrong input!!");
+	parse_cmd_node(token, cmd_node); 
 	return (cmd_node);
-	// parse_cmd_node(token, cmd_node);
 }
 
 t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 {
 	while (*token)
 	{
-		*token = expand_tokens(token);
+		*token = expand_tokens(token); 
 		if (*token && (*token)->P < 3)
 		{
 			cmd_node = create_node(CMD_NODE);
@@ -136,5 +136,5 @@ void parser(t_data *data)
 	start = data->tok_list;
 	data->tree = parse_loop(&start, NULL, NULL);
 
-	// print_tree(data->tree, 0);
+	print_tree(data->tree, 0);
 }

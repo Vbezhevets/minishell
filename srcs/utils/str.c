@@ -45,7 +45,6 @@ char *expand_str(char *input)
 
 	char	q1 = '\'';
 	char	q2 = '\"';
-
 	
 	if (input[0] == q1 || (input[0] == q2))// && !ft_strchr(input, '$')))
 		res = del_quotes(input, input[0]);

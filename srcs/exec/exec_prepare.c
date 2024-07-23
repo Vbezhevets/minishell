@@ -58,19 +58,45 @@ int check_cmd(t_cmd **cmd, t_data *data)
 		return (1);
 }
 
+void assign_redirects(t_cmd *cmd, t_data *data)
+{
+	char *from_path;
+	char *to_path;
 
+
+	if (cmd->from_file)
+	{
+		from_path = ft_strjoin(data->cwd, cmd->from_file->value);
+		printf("%s\n",  from_path);
+		// cmd->from_fd = open(cmd->from_file, O_RDONLY);
+	}
+	// else if (pipe)
+
+	if (cmd->to_file)
+	{
+		to_path = ft_str3join(data->cwd, "/", cmd->to_file->value);
+		printf("%s\n",  to_path);
+		// cmd->from_fd = open(cmd->from_file, O_RDONLY);
+	}
+
+
+}
 
 int	handle_cmd(t_data *data, t_cmd *cmd)
 {
-	char	cwd[8192];
 
-    if (getcwd(cwd, sizeof(cwd)) == NULL)       
+    if (getcwd(data->cwd, sizeof(data->cwd)) == NULL)       
         return (perror("getcwd error"), 1);
+	// if (data->cmd_qty > 1)
+	// {
+	// 	if (pipe() > )
+	// }
 	while(cmd)
 	{
 		//pipe create/connnect;
 		if (!check_cmd(&cmd, data))
 			continue;
+		assign_redirects(cmd, data);
 		if (cmd->bi)
 			builtin(cmd, data);
 		else
@@ -78,7 +104,7 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 			cmd->pid = fork();
 			if (cmd->pid == 0)
 			{
-				if (rdr(cmd->from_file, cwd, cmd, 0) && rdr(cmd->to_file, cwd, cmd, 1))
+				if (rdr(cmd->from_file, data->cwd, cmd, 0) && rdr(cmd->to_file, data->cwd, cmd, 1))
 					exec(data, cmd);
 			}
 				waitpid(-1, NULL, 0);
