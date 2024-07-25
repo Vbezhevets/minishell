@@ -13,7 +13,7 @@
 # include <readline/history.h>
 # include "../libft/libft.h"
 
-# define DELIM " \n"
+# define DELIM " \t\n"
 # define DELIMQ " \n\t\"\'"
 # define Q1 "\'"
 # define Q2 "\""
@@ -95,6 +95,7 @@ typedef struct s_cmd
 {
 	int				bi;
 	int				pid;
+	int				ex_stat;
 	int				from_fd;
 	int				to_fd;
 	int				num;
@@ -103,7 +104,7 @@ typedef struct s_cmd
 	char			**args;
 	char			*path;
 	t_cmd_field		*to_file; //to
-	// t_cmd_field	*to_to_file; //to
+	t_cmd_field		*to_to_file; //to
 	t_cmd_field		*from_file; //from
 	char			*her_doc; //from
 	struct s_cmd	*next;
@@ -126,7 +127,12 @@ typedef struct s_data
 	t_cmd	*cmd_list;
 	t_token	*tok_list;
 	t_node	*tree;
+	int		std_in;
+	int		std_out;
+	int		prev_pipe[2];
+	int		next_pipe[2];
 	int		pipe[2];
+
 	char	**envp;
 	char	cwd[8192];
 	int		envpc;
@@ -150,7 +156,10 @@ int		handle_cmd(t_data *data, t_cmd *cmd);
 int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
 t_cmd_field *create_field(char *input_str, int type);
-int		rdr(t_cmd_field *file, char *cwd, t_cmd *cmd, int drct);
+
+
+int 	redirect(t_cmd *cmd, t_data *data);
+int		rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct);
 
 int		envpcpy(t_data *data, char **src_envp, char ***dst_envp, t_var *var);
 int		exp0rt(char *arg, t_var *var, t_data *data);

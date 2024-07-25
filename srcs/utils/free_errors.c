@@ -24,22 +24,42 @@ void free_tree(t_node *node)
 		free_tree(node->left);
 	if (node->right)
 		free_tree(node->right);
-	if (node->value)
+	if (node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
 	{	
 		free(node->value);
 		node->value = NULL;
 	}
 	free(node);
+	node = NULL;
 }
 
 void	free_tok(t_token *token)
 {
 	t_token *temp;
 
-	while (token && token->next)
+	while (token)
 	{
 		temp = token;
 		token = token->next;
+		// if (temp->value)
+		// {
+		// 	free(temp->value);
+		// 	temp->value = NULL;
+		// }
+		free(temp);
+		temp = NULL;
+	}
+}
+void	free_field(t_cmd_field	*field)
+{
+	t_cmd_field	*temp;
+
+	if (!field)
+		return;
+	while (field)
+	{
+		temp = field;
+		field = field->next;
 		if(temp->value)
 			free(temp->value);
 		free(temp);
@@ -47,24 +67,35 @@ void	free_tok(t_token *token)
 	}
 }
 
+void	free_cmds(t_cmd *cmd)
+{
+	t_cmd *temp;
 
-// void	free_cmds(t_cmd *cmd)
-// {
-// 	t_token *temp;
-
-// 	while (cmd)
-// 	{
-// 		cmd = cmd->next;
-// 		free(temp);
-// 	}
-// }
+	while (cmd)
+	{	
+		temp = cmd;
+		cmd = cmd->next;
+		free_field(temp->to_to_file);
+		free_field(temp->to_file);
+		free_field(temp->from_file);
+		// free(temp->her_doc);
+		if (temp->path)
+			free(temp->path);
+		temp->path = NULL;
+		free_and_null_(temp->args);
+		if (temp->args)
+			free(temp->args);
+		free(temp);
+		temp = NULL;
+	}
+}
 
 
 void free_all(t_data *data)
 {
 	free_tree(data->tree);
 	free_tok(data->tok_list);
-	// free_cmds(data->cmd_list);
+	free_cmds(data->cmd_list);
 }
 
 void error(char *str)

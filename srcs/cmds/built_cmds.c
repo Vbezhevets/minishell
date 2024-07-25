@@ -99,11 +99,11 @@ t_cmd_field *create_field(char *input_str, int type)
 	field->next = NULL;
 	field->prev = NULL;
 	if (type == TO_FILE)
-		field->P = 1;
-    if (type == TO_TO_FILE)
 		field->P = 2;
+    if (type == TO_TO_FILE)
+		field->P = 3;
     if (type == FROM_FILE)
-		field->P = 0;
+		field->P = 1;
 	return (field);
 }
 

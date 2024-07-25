@@ -33,6 +33,9 @@ t_node* tok_to_nod(t_token *token)
 	else
 	 	node->quot = token->type;
 	node->value = token->value;
+	// node->value = (char *)malloc(sizeof(char) * (token->length + 1));
+	// // if
+	// ft_strcpy(node->value, token->value);
  	return node;
 }
 
@@ -136,5 +139,5 @@ void parser(t_data *data)
 	start = data->tok_list;
 	data->tree = parse_loop(&start, NULL, NULL);
 
-	print_tree(data->tree, 0);
+	// print_tree(data->tree, 0);
 }

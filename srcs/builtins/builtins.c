@@ -33,8 +33,11 @@ int env(t_data *data)
 }
 
 
-int echo(char **args, int i)
+int echo(char **args)
 {
+	int	i;
+
+	i = 0;
 	while (args[++i])
 	{
 		printf("%s", args[i]);
@@ -72,6 +75,6 @@ int builtin(t_cmd *cmd, t_data *data)
 	if (strnlcmp(cmd->args[0], "env"))
 		return(env(data));
 	if (strnlcmp(cmd->args[0], "echo"))
-		return(echo(cmd->args, 0));
+		return(echo(cmd->args));
 	return (1);
 }
