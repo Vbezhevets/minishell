@@ -8,7 +8,7 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
-		error("ты пидор!\n");
+		error("ahh!\n");
 	// data->cmd[data->cmd_num] = cmd;
 	data->cmd_qty++;
 	cmd->args_qty = 0;

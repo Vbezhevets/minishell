@@ -158,7 +158,7 @@ int 	builtin(t_cmd *cmd, t_data *data);
 t_cmd_field *create_field(char *input_str, int type);
 
 
-int 	redirect(t_cmd *cmd, t_data *data);
+int 	redirect(t_cmd **cmd, t_data *data);
 int		rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct);
 
 int		envpcpy(t_data *data, char **src_envp, char ***dst_envp, t_var *var);

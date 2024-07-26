@@ -30,22 +30,25 @@ int rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct)
 	return (1);
 }
 
-int	redirect(t_cmd *cmd, t_data *data)
+int	redirect(t_cmd **cmd, t_data *data)
 {
-
-	if (cmd->from_file)
+	int result;
+	
+	if ((*cmd)->from_file)
 	{
 		if (data->pipe[0] != -1)
 			close (data->pipe[0]);
 		dup2(data->std_in, STDIN_FILENO);
-		return (rdr(cmd->from_file, data, cmd, STDIN_FILENO));
+		result = rdr((*cmd)->from_file, data, *cmd, STDIN_FILENO);
 	}
-	if (cmd->to_file)
+	if ((*cmd)->to_file)
 	{
 		if (data->pipe[1] != -1)
 			close (data->pipe[1]);
 		dup2(data->std_out, STDOUT_FILENO);
-		return (rdr(cmd->to_file, data, cmd, STDOUT_FILENO));
-	}// else 
-	return (1);
+		result = rdr((*cmd)->to_file, data, *cmd, STDOUT_FILENO);
+	}
+	if (!result)
+		*cmd = (*cmd)->next;
+	return (result);
 }

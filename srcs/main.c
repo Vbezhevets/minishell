@@ -18,11 +18,12 @@ t_data *init_data(t_data *data, char **sys_envp)
 	data->cmd_list = NULL;
 	data->pipe[0] = -1;
 	data->pipe[1] = -1;
-	data->std_in = dup(STDIN_FILENO);
-	data->std_out = dup(STDOUT_FILENO);
+	data->next_pipe[0] = -1;
+	data->next_pipe[1] = -1;
+	data->prev_pipe[0] = -1;
+	data->prev_pipe[1] = -1;
  	if (data->std_out < 0 || data->std_in < 0)
 		return(free(data), free(data->var), exit(1), NULL);
-	
 	return(data);
 }
 
