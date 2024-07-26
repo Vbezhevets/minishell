@@ -61,8 +61,8 @@ int check_cmd(t_cmd **cmd, t_data *data)
 
 int reset_descrpt(t_data *data)
 {
-	if (data->cmd_qty < 2)
-		return (0);
+	// if (data->cmd_qty < 2)
+	// 	return (0);
 	if (dup2(data->std_in, STDIN_FILENO) == -1)
 		return perror("dup2 std_in"), -1;
 	if (data->std_out != STDOUT_FILENO)

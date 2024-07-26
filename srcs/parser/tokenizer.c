@@ -147,7 +147,7 @@ t_token	*tokenizer(char *input_str, t_data *data)
 		while (*input_str && ft_strchr(DELIM, *input_str))
 			input_str++;
 		if (*input_str == '\0')
-			return (NULL);
+			break;
 		if (!tok_list)
 		{
 			tok_list = create_tok(input_str, data);
