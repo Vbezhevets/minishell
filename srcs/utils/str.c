@@ -39,13 +39,15 @@ char *del_quotes(char *str, char q)
 //copy just symbls <- выделаить память: <- посчитать сколько <- 
 
 
-char *expand_str(char *input)
+char *expand_str(char *input, t_token *token)
 {
 	char *res;
 
 	char	q1 = '\'';
 	char	q2 = '\"';
 	
+	if (token)
+		token->exp = 0;
 	if (input[0] == q1 || (input[0] == q2))// && !ft_strchr(input, '$')))
 		res = del_quotes(input, input[0]);
 	else
@@ -71,6 +73,7 @@ int ft_strset(char *str, char *set)
 	}
 	return i;
 }
+
 char **add_str_arr(char **old, char *str)
 {
 	int		i;

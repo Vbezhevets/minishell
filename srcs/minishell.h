@@ -40,7 +40,7 @@ typedef enum s_type
 	HEREDOC,//16
 }	t_type;
 
-static const char *const builtins[] = {
+static const char *const BUILTINS[] = {
 	"export",
 	"echo",
 	"cd",
@@ -62,6 +62,7 @@ typedef struct s_token
 	struct	s_token	*next;
 	struct	s_token	*prev;
 	struct	s_data	*data;
+	int				exp;
 }	t_token;
 
 typedef struct s_cmd_field
@@ -85,10 +86,10 @@ typedef struct s_node
 }	t_node;
 
 
-// typedef struct s_builtins
+// typedef struct s_BUILTINS
 // {
 // 	char			*echo;
-// }	t_builtins
+// }	t_BUILTINS
 
 typedef struct s_cmd
 
@@ -132,7 +133,7 @@ typedef struct s_data
 	int		prev_pipe[2];
 	int		next_pipe[2];
 	int		pipe[2];
-
+	unsigned int ex_stat;
 	char	**envp;
 	char	cwd[8192];
 	int		envpc;
@@ -165,7 +166,7 @@ int		envpcpy(t_data *data, char **src_envp, char ***dst_envp, t_var *var);
 int		exp0rt(char *arg, t_var *var, t_data *data);
 
 int		strnlcmp(char *str1, char *str2);
-char	*expand_str(char *input);
+char	*expand_str(char *input, t_token *token);
 int		ft_strset(char *str, char *set);
 char	**add_str_arr(char **old, char *str);
 

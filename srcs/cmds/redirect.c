@@ -5,6 +5,7 @@ int rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct)
 	char	*path;
 	int		fd;
 
+	fd = -1;
 	while(file)
 	{
 		path = ft_str3join(data->cwd, "/", file->value);
@@ -33,6 +34,8 @@ int rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct)
 int	redirect(t_cmd **cmd, t_data *data)
 {
 	int result;
+
+	result =1;
 	
 	if ((*cmd)->from_file)
 	{
@@ -48,7 +51,7 @@ int	redirect(t_cmd **cmd, t_data *data)
 		dup2(data->std_out, STDOUT_FILENO);
 		result = rdr((*cmd)->to_file, data, *cmd, STDOUT_FILENO);
 	}
-	if (!result)
-		*cmd = (*cmd)->next;
+	if (result <= 0) 	
+		return (*cmd = (*cmd)->next, 0);
 	return (result);
 }

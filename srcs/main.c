@@ -36,7 +36,11 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		// if (isatty(fileno(stdin)))
+		{
 			input = readline("Slava Ukraini! 🇺🇦 >");
+				if (!input)
+					break;
+		}
 	// 	else
 	// {
 	// 	char *line;
@@ -44,7 +48,6 @@ int main(int argc, char **argv, char **envp)
 	// 	input = ft_strtrim(line, "\n");
 	// 	free(line);
 	// }
-
 		if (input)
 		{
 			data->tok_list = tokenizer(input, data);

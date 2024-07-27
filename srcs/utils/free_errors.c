@@ -93,9 +93,24 @@ void	free_cmds(t_cmd *cmd)
 
 void free_all(t_data *data)
 {
-	free_tree(data->tree);
-	free_tok(data->tok_list);
-	free_cmds(data->cmd_list);
+	if (data->tree)
+	{
+		free_tree(data->tree);
+		free(data->tree);
+		data->tree = NULL;
+	}
+	if (data->tok_list)
+	{
+		free_tok(data->tok_list);
+		free(data->tok_list);
+		data->tok_list = NULL;
+	}
+	if (data->cmd_list)
+	{
+		free_cmds(data->cmd_list);
+		free(data->cmd_list);
+		data->cmd_list = NULL;
+	}
 }
 
 void error(char *str)

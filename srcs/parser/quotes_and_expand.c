@@ -37,7 +37,7 @@ char *expand_var(char *str, t_data *data)
 	
 	i = 0;
 	k = 0;
-	unq = expand_str(str);
+	unq = expand_str(str, NULL);
 	new = NULL;
 	res = NULL;
 	temp = NULL;
@@ -45,7 +45,7 @@ char *expand_var(char *str, t_data *data)
 	
 	while(unq[i])
 	{
-		while (unq[i] != '$')
+		while (unq[i] && unq[i] != '$')
 			i++;
 		temp = ft_substr(unq, 0, i);
 		if (unq[i] == '$')
@@ -83,7 +83,7 @@ t_token *expand_tokens(t_token **in_token)
 		return (*in_token);
 	else if (!ft_strchr((*in_token)->value, '$'))
 	{
-		(*in_token)->value = (expand_str((*in_token)->value));
+		(*in_token)->value = expand_str((*in_token)->value, *in_token);
 		return (*in_token);
 	}
 	else

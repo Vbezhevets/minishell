@@ -33,10 +33,10 @@ int is_bltin(t_cmd *cmd)
 {
 	int i;
 
-	i = 6;
+	i = 7;
 	while (i >= 0)
 	{
-		if (strnlcmp(cmd->args[0], (char *)builtins[i]))
+		if (strnlcmp(cmd->args[0], (char *)BUILTINS[i]))
 			{
 				cmd->bi = 1;
 				return (i + 1);
@@ -48,6 +48,14 @@ int is_bltin(t_cmd *cmd)
 
 int check_cmd(t_cmd **cmd, t_data *data)
 {
+	char *just_name;
+	
+	if (ft_strchr((*cmd)->args[0], '/'))
+	{
+		just_name = ft_trimend((*cmd)->args[0], '/');
+ 		free((*cmd)->args[0]);
+		(*cmd)->args[0] = just_name;
+	}
 	if (!is_bltin(*cmd) && 
 		!((*cmd)->path = get_cmd_path(data->envp, (*cmd)->args[0])))
 		{
@@ -111,7 +119,7 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 	{
 		if (getcwd(data->cwd, sizeof(data->cwd)) == NULL)       
 			return (perror("getcwd error"), 1);
-		if (!check_cmd(&cmd, data))
+			if (!check_cmd(&cmd, data))
 			continue;
 		manage_pipes(cmd, data);
 		if (!redirect(&cmd, data))
@@ -125,6 +133,8 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 				exec(data, cmd);
 			waitpid(cmd->pid, &cmd->ex_stat, WUNTRACED);
 		}
+		if (!cmd->next)
+			data->ex_stat = cmd->ex_stat;
 		cmd = cmd->next;
 	}
 		reset_descrpt(data);

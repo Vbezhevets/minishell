@@ -41,7 +41,7 @@ int echo(char **args)
 	while (args[++i])
 	{
 		printf("%s", args[i]);
-		if(args[i])
+		if(args[i + 1])
 			printf(" ");
 	}
 	printf("\n");
@@ -52,6 +52,12 @@ int echo(char **args)
 	return (0);
 }
 
+int my_exit(t_data *data)
+{
+	unsigned int	i;
+	free_all(data);
+	return (data->ex_stat);
+}
 
 int builtin(t_cmd *cmd, t_data *data)
 {
@@ -76,5 +82,7 @@ int builtin(t_cmd *cmd, t_data *data)
 		return(env(data));
 	if (strnlcmp(cmd->args[0], "echo"))
 		return(echo(cmd->args));
+	if (strnlcmp(cmd->args[0], "exit"))
+		my_exit(data);
 	return (1);
 }

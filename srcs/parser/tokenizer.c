@@ -20,6 +20,7 @@ int quoted(char *s)
 	}
 	return (i + 1);
 }
+
 int tok_detect(char *token_value)
 {
 	if (token_value[0] == '>') 
@@ -55,21 +56,21 @@ int quot_detect(char *s)
 static int	ft_length(char *s)
 {
 	char *start;
-	int l;
+	int rdr_l;
 
-	l = 0;
+	rdr_l = 0;
 	start = s;
 	while (*s && !ft_strchr(DELIM, *s))
 	{
 		if (quot_detect(s) != 1)
 			s += quoted(s);
 		if (tok_detect(s) == RLRL || tok_detect(s) == LRLR)
-			l = 2;
+			rdr_l = 2;
 		else if (tok_detect(s) == RL || tok_detect(s) == LR || tok_detect(s) == PIPE)
-			l = 1;
-		if (l != 0 && !(s - start)) //  возрашаем значение редиректа
-			return (l);
-		if (l != 0 && (s - start)) // возврашаем значение перед редиерктом
+			rdr_l = 1;
+		if (rdr_l != 0 && !(s - start)) //  возрашаем значение редиректа
+			return (rdr_l);
+		if (rdr_l != 0 && (s - start)) // возврашаем значение перед редиерктом
 			return (s - start);
 		s += quot_detect(s);
 	}
@@ -106,6 +107,7 @@ t_token *create_tok(char *input_str, t_data *data)
 	token->prev = NULL;
 	token->P = precedence(token);
 	token->data = data;
+	token->exp = 1; //and
 	return (token);
 }
 /*
