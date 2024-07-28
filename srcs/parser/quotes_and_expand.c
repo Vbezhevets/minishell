@@ -71,22 +71,22 @@ char *expand_var(char *str, t_data *data)
 	return (new);
 }
 
-// есть смысл все раскрыть в одну строку а затем ее пропустить еще раз через токенайзер? и прицепить все токены к текущему?
 t_token *expand_tokens(t_token **in_token)
 {
 	t_token	*next;
 	t_token	*expanded_tokens;
 	t_data	*data; 
 
+
 	data = (*in_token)->data;
-	if (!ft_strset((*in_token)->value, "$\"\'"))
+	if (!(*in_token)->exp || !ft_strset((*in_token)->value, "$\"\'"))
 		return (*in_token);
 	else if (!ft_strchr((*in_token)->value, '$'))
 	{
 		(*in_token)->value = expand_str((*in_token)->value, *in_token);
 		return (*in_token);
 	}
-	else
+	else 
 	 	expanded_tokens = tokenizer(expand_var((*in_token)->value, data), data);
 	if (!expanded_tokens)
 		expanded_tokens = create_tok("", data);

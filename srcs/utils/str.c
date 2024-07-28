@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include <string.h>
 
 int strnlcmp(char *str1, char *str2)
 {
@@ -9,35 +10,21 @@ int strnlcmp(char *str1, char *str2)
         return (1);
     return 0;
 }
-
-
-char *del_quotes(char *str, char q)
+char *del_quotes(char *str, char q, int i)
 {
-	char	s;
-	char	*res;
-	int		i;
-	int		k;
+	char **temp;
+	char *res;
 
-	i = 0;
-	while (str[i] && str[i] != q)
-		i++;	
-	res = (char *)malloc(sizeof(char) * (i) + 1);
-	// if (!res)`
-	i = 0;
-	k = -1;
-	while (str[i])
+	res = NULL;
+	temp = ft_split(str, q);
+
+	while (temp[i])
 	{
-		if(str[i] != q)
-			res[++k] = str[i];
+		res = free_join (res, temp[i]);
 		i++;
 	}
-	free(str);
-	str = NULL;
-	res[++k] = '\0';
 	return res;
 }
-//copy just symbls <- выделаить память: <- посчитать сколько <- 
-
 
 char *expand_str(char *input, t_token *token)
 {
@@ -45,15 +32,28 @@ char *expand_str(char *input, t_token *token)
 
 	char	q1 = '\'';
 	char	q2 = '\"';
+	int		i;
 	
 	if (token)
 		token->exp = 0;
-	if (input[0] == q1 || (input[0] == q2))// && !ft_strchr(input, '$')))
-		res = del_quotes(input, input[0]);
+	i = 0;
+	while (input[i])
+	{
+		if (input[i] == q1 || input[i] == q2)
+			break;
+		i++;
+	}
+	if (input[i] == q1 || (input[i] == q2))// && !ft_strchr(input, '$')))
+	{
+		res = del_quotes(input, input[i], 0);
+		if (strcmp(res, input))
+			free(input);
+	}
 	else
 		return (input);
 	return (res);
 }
+
 int ft_strset(char *str, char *set)
 {
 	char	*b;

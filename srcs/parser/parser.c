@@ -18,6 +18,8 @@ t_node	*create_node(t_type type)
 		node->value = "CMD_NODE"; //
 	if (type == RDRCT_NODE)
 		node->value = "RDRCT_NODE"; //
+	else 
+		node->value = NULL;
 	return(node);
 }
 
@@ -33,9 +35,9 @@ t_node* tok_to_nod(t_token *token)
 	else
 	 	node->quot = token->type;
 	node->value = token->value;
-	// node->value = (char *)malloc(sizeof(char) * (token->length + 1));
-	// // if
-	// ft_strcpy(node->value, token->value);
+	node->value = (char *)malloc(sizeof(char) * (token->length + 1));
+	// if
+	ft_strcpy(node->value, token->value);
  	return node;
 }
 
@@ -107,8 +109,7 @@ t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 {
 	while (*token)
 	{
-		if ((*token)->exp)
-			*token = expand_tokens(token);
+		*token = expand_tokens(token);
 		if (*token && (*token)->P < 3)
 		{
 			cmd_node = create_node(CMD_NODE);

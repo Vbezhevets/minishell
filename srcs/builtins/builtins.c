@@ -54,9 +54,9 @@ int echo(char **args)
 
 int my_exit(t_data *data)
 {
-	unsigned int	i;
-	free_all(data);
-	return (data->ex_stat);
+	// free_all(data);
+ 	exit(data->ex_stat);
+ 	// exit(0);
 }
 
 int builtin(t_cmd *cmd, t_data *data)

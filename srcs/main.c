@@ -6,7 +6,7 @@ t_data *init_data(t_data *data, char **sys_envp)
 {
 	data = (t_data *)malloc(sizeof(t_data));
 	if (!data)
-		exit(1); //
+		exit(1); //d
 	data->var = (t_var *)malloc(sizeof(t_var));
 	if (!data->var)
 		return(free(data), exit(1), NULL);
@@ -16,12 +16,14 @@ t_data *init_data(t_data *data, char **sys_envp)
 	data->cmd_qty = 0;
 	data->tok_list = NULL;
 	data->cmd_list = NULL;
-	data->pipe[0] = -1;
-	data->pipe[1] = -1;
+	data->tree = NULL;
+	// data->pipe[0] = -1;
+	// data->pipe[1] = -1;
 	data->next_pipe[0] = -1;
 	data->next_pipe[1] = -1;
 	data->prev_pipe[0] = -1;
 	data->prev_pipe[1] = -1;
+	data->ex_stat = 0;
  	if (data->std_out < 0 || data->std_in < 0)
 		return(free(data), free(data->var), exit(1), NULL);
 	return(data);
@@ -29,8 +31,9 @@ t_data *init_data(t_data *data, char **sys_envp)
 
 int main(int argc, char **argv, char **envp)
 {
-	t_data	*data;
-	char	*input;
+	t_data			*data;
+	char			*input;
+	unsigned int	ex_stat;
 
 	data = init_data(data, envp);
 	while (1)
@@ -58,10 +61,9 @@ int main(int argc, char **argv, char **envp)
 			free_all(data);
 			data->cmd_qty = 0;
 		}
-
-
 	}
+		ex_stat = data->ex_stat;
+		printf("%d\n", ex_stat);
 		free(data);
-
-	exit (0);
+	exit (ex_stat);
 }

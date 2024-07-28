@@ -119,13 +119,13 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 	{
 		if (getcwd(data->cwd, sizeof(data->cwd)) == NULL)       
 			return (perror("getcwd error"), 1);
-			if (!check_cmd(&cmd, data))
+		if (!check_cmd(&cmd, data))
 			continue;
 		manage_pipes(cmd, data);
 		if (!redirect(&cmd, data))
 			continue;
 		if (cmd->bi)
-			builtin(cmd, data);
+			data->ex_stat = builtin(cmd, data);
 		else 
 		{
 			cmd->pid = fork();

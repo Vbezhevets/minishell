@@ -24,9 +24,9 @@ void free_tree(t_node *node)
 		free_tree(node->left);
 	if (node->right)
 		free_tree(node->right);
-	if (node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
+	if (node && node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
 	{	
-		free(node->value);
+		// free(node->value);
 		node->value = NULL;
 	}
 	free(node);
@@ -41,15 +41,15 @@ void	free_tok(t_token *token)
 	{
 		temp = token;
 		token = token->next;
-		// if (temp->value)
-		// {
-		// 	free(temp->value);
-		// 	temp->value = NULL;
-		// }
+		if (temp->value)
+		{
+			free(temp->value);
+			temp->value = NULL;
+		}
 		free(temp);
-		temp = NULL;
 	}
 }
+
 void	free_field(t_cmd_field	*field)
 {
 	t_cmd_field	*temp;
@@ -61,7 +61,10 @@ void	free_field(t_cmd_field	*field)
 		temp = field;
 		field = field->next;
 		if(temp->value)
+		{
 			free(temp->value);
+			temp->value = NULL;
+		}
 		free(temp);
 		temp = NULL;
 	}
@@ -96,20 +99,20 @@ void free_all(t_data *data)
 	if (data->tree)
 	{
 		free_tree(data->tree);
-		free(data->tree);
-		data->tree = NULL;
+		// free(data->tree);
+		// data->tree = NULL;
 	}
 	if (data->tok_list)
 	{
 		free_tok(data->tok_list);
-		free(data->tok_list);
-		data->tok_list = NULL;
+		// free(data->tok_list);
+		// data->tok_list = NULL;
 	}
 	if (data->cmd_list)
 	{
 		free_cmds(data->cmd_list);
-		free(data->cmd_list);
-		data->cmd_list = NULL;
+		// free(data->cmd_list);
+		// data->cmd_list = NULL;	
 	}
 }
 
