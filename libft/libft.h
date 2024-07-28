@@ -6,7 +6,7 @@
 /*   By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 12:37:06 by bvalerii          #+#    #+#             */
-/*   Updated: 2024/07/23 13:37:33 by bvalerii         ###   ########.fr       */
+/*   Updated: 2024/07/27 19:38:41 by bvalerii         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,5 @@ void	ft_putunbr(unsigned int n, int *count);
 void	ft_putpntr(void *pntr, int *count);
 void	ft_putx(int n, int *count);
 void	ft_put_x(int n, int *count);
+char    *ft_trimend(char *src, char c);
 #endif
