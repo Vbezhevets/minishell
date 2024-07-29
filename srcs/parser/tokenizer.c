@@ -12,7 +12,7 @@ int quoted(char *s)
 	while (1)
 	{
 		if (*s == '\0')
-			error("quotes error");
+			return (error("quotes error", NULL), -1);
 		if (*s == q && *(s - 1) != '\\')
 			break;
 		s++;
@@ -62,7 +62,7 @@ static int	ft_length(char *s)
 	start = s;
 	while (*s && !ft_strchr(DELIM, *s))
 	{
-		if (quot_detect(s) != 1)
+		if (quot_detect(s) != 1 && quoted(s) > 0)
 			s += quoted(s);
 		if (tok_detect(s) == RLRL || tok_detect(s) == LRLR)
 			rdr_l = 2;

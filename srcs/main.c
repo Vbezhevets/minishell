@@ -38,19 +38,19 @@ int main(int argc, char **argv, char **envp)
 	data = init_data(data, envp);
 	while (1)
 	{
-		// if (isatty(fileno(stdin)))
+		if (isatty(fileno(stdin)))
 		{
 			input = readline("Slava Ukraini! 🇺🇦 >");
 				if (!input)
 					break;
 		}
-	// 	else
-	// {
-	// 	char *line;
-	// 	line = get_next_line(fileno(stdin));
-	// 	input = ft_strtrim(line, "\n");
-	// 	free(line); pidor
-	// }
+		else
+	{
+		char *line;
+		line = get_next_line(fileno(stdin));
+		input = ft_strtrim(line, "\n");
+		free(line);
+	}
 		if (input)
 		{
 			data->tok_list = tokenizer(input, data);
@@ -63,7 +63,7 @@ int main(int argc, char **argv, char **envp)
 		}
 	}
 		ex_stat = data->ex_stat;
-		printf("%d\n", ex_stat);
+		// printf("%d\n", ex_stat);
 		free(data);
 	exit (ex_stat);
 }

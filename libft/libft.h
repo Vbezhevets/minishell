@@ -64,4 +64,6 @@ void	ft_putunbr(unsigned int n, int *count);
 void	ft_putpntr(void *pntr, int *count);
 void	ft_putx(int n, int *count);
 void	ft_put_x(int n, int *count);
+char	*ft_trimend(char *s1, char c);
+
 #endif

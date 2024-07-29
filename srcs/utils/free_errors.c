@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include <unistd.h>
 
 void	free_and_null_(char **a)
 {
@@ -116,9 +117,17 @@ void free_all(t_data *data)
 	}
 }
 
-void error(char *str)
+void error(char *s1, char *s2)
 {
 	//free
-	printf("%s\n", str);
-	exit(1);
+	if (s2)
+	{
+		write(2, "\"", 1);
+		write(2, s1, ft_strlen(s1));
+		write(2, "\" ", 2);
+		write(2, s2, ft_strlen(s2));
+	}
+	else 
+		write(2, s1, ft_strlen(s1));
+	write(2, "\n", 1);
 }

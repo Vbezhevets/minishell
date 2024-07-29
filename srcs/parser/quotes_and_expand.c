@@ -46,24 +46,46 @@ int no_extr_need(char *str, char q)
 		return (qcount % 2);
 }
 
-char *expand_var(char *str, t_data *data)
+char *add_str(char *res, char *beg, char *var)
+{
+	char	*new;
+
+	new = ft_str3join(res, beg, var);
+	if (res)
+	{
+		free (res);
+		res = NULL;
+	}
+	if (beg)
+	{
+		free (beg);
+		beg = NULL;
+	}
+	if (strnlcmp(var, "$"))
+	{
+		free (var);
+		var = NULL;
+	}
+	return (new);
+}
+
+char *expand_str(char *str, t_data *data)
 {
 	char	*res;
 	char	*unq;
 	char	*var_name;
 	char	*var_val;
 	char	*new;
-	char 	*temp;
+	char 	*beg;
 	int		i;
 	int		k;
 	
 	i = 0;
 	k = 0;
-	unq = expand_str(str, NULL);
+	unq = get_rid_q(str, NULL);
 	new = NULL;
 	res = NULL;
-	temp = NULL;
-
+	beg = NULL;
 	
 	while(unq[i])
 	{
@@ -71,32 +93,35 @@ char *expand_var(char *str, t_data *data)
 			return(unq);
 		while (unq[i] && unq[i] != '$')
 			i++;
-		temp = ft_substr(unq, 0, i);
+		beg = ft_substr(unq, 0, i);
 		if (unq[i] == '$')
 		{
 			i++;
 			k = i;
 			while (unq[k] && (ft_isalnum(unq[k]) || unq[k] == '_'))
 				k++;
-			var_name = ft_substr(unq, i, k - 1);
-	 		var_val = exp_var(var_name, data);
-			free(var_name);
-			res = new;
-			new = ft_str3join(res, temp, var_val);
-			if (res)
-				free(res);
-			if (temp)
-				free(temp);
-			// free(var_val);
+			if (k > i)
+			{
+				if (unq[i] == '?')
+					var_val = ft_itoa(data->ex_stat);
+				else
+				{
+					var_name = ft_substr(unq, i, k - i);
+	 				var_val = exp_var(var_name, data);
+					free(var_name);
+				}
+			}
+			else
+				var_val = ft_strjoin("", "$");
+			res = (add_str(res, beg, var_val));
 		}
-		unq = (unq + k);
+		else 
+			return(add_str(res, beg, NULL));
+		unq = unq + k;
 		i = 0;
 	}
 	return (new);
 }
-
-
-
 
 void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
 {
@@ -129,18 +154,21 @@ t_token *expand_tokens(t_token **in_token)
 		return (*in_token);
 	else if (no_extr_need((*in_token)->value, '\''))
 	{
-		(*in_token)->value = expand_str((*in_token)->value, *in_token);
+		(*in_token)->value = get_rid_q((*in_token)->value, *in_token);
 		(*in_token)->exp = 0;
 		return (*in_token);
 	}
 	else
-	 	expanded_tok = tokenizer(expand_var((*in_token)->value, data), data);
+		(*in_token)->value = expand_str((*in_token)->value, data);
+	/*	expanded_tok = tokenizer(expand_str((*in_token)->value, data), data);
 	if (!expanded_tok)
 		expanded_tok = create_tok("", data);
 	connect_tok_list(&expanded_tok, *in_token, data);
 	free(*in_token);
-		*in_token = NULL;
-		expanded_tok->exp = 0; //and
-	return (expanded_tok);
+		*in_token = NULL;	
+		expanded_tok->exp = 0; 
+
+	return (expanded_tok); */
+	return (*in_token);
 }
  

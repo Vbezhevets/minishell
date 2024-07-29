@@ -23,3 +23,13 @@ char	*ft_strtrim(char *src, char *set)
 		i--;
 	return (ft_substr(src, 0, i));
 }
+char	*ft_trimend(char *src, char c)
+{
+	int	i;
+
+	i = ft_strlen(src);
+	while (i >= 0 && src[i] != c)
+		i--;
+	
+	return (ft_substr(src, i, ft_strlen(src) - 1));
+}

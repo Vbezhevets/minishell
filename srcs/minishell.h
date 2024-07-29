@@ -166,13 +166,13 @@ int		envpcpy(t_data *data, char **src_envp, char ***dst_envp, t_var *var);
 int		exp0rt(char *arg, t_var *var, t_data *data);
 
 int		strnlcmp(char *str1, char *str2);
-char	*expand_str(char *input, t_token *token);
+char	*get_rid_q(char *input, t_token *token);
 int		ft_strset(char *str, char *set);
 char	**add_str_arr(char **old, char *str);
 
 void	print_tree(t_node *node, int intent);
 
-void	error(char *str);
+void	error(char *s1, char *s2);
 void	free_all(t_data *data);
 void	free_and_null_(char **a);
 

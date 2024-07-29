@@ -26,7 +26,7 @@ char *del_quotes(char *str, char q, int i)
 	return res;
 }
 
-char *expand_str(char *input, t_token *token)
+char	*get_rid_q(char *input, t_token *token)
 {
 	char *res;
 

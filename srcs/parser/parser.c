@@ -10,7 +10,7 @@ t_node	*create_node(t_type type)
 
 	node = (t_node *)malloc(sizeof(t_node));
 	if (!node)
-		error("alloc error");
+		error("alloc error", NULL);
 	node->type = type;
 	node->left = NULL;
 	node->right = NULL;
@@ -47,7 +47,7 @@ void *parse_redir(t_token **token, t_node *left)
  
 	*token = expand_tokens(token);
 	if (!(*token)->next || (*token)->next->type > 2)
-		error("wrong redirect");
+		error("wrong redirect", NULL);
 	while(left && left->left)
 		left = left->left;
 	rdr_node = create_node(RDRCT_NODE);
@@ -100,7 +100,7 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 	else if (*token && (*token)->P == 1) // word
 		parse_cmd(token, &cmd_node->right);
 	else 
-		error("wrong input!!");
+		error("wrong input!!", NULL);
 	parse_cmd_node(token, cmd_node); 
 	return (cmd_node);
 }
@@ -118,12 +118,12 @@ t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 		if (*token && (*token)->type == PIPE)
 		{
 			if (!cmd_node)
-				return (error("wrong input!!!"), NULL);
+				return (error("wrong input!!!", NULL), NULL);
 			pipe_node = tok_to_nod(*token);
 			pipe_node->left = cmd_node;
 			*token = (*token)->next;
 			if (!*token || ((*token)->P != 1 && (*token)->P != 2))
-				return (error("wrong input"), NULL);
+				return (error("wrong input", NULL), NULL);
 			pipe_node->right = parse_loop(token, NULL, NULL);
 			return(pipe_node);
 		}

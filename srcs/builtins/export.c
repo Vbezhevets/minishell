@@ -118,11 +118,11 @@ char **get_new_var(char *new_var)
 	}
 	if (temp[1])
 	{
-		temp[1] = expand_str(temp[1], NULL);
+		temp[1] = get_rid_q(temp[1], NULL);
 		while (temp[++i])
 		{
 			temp[1] = free_join(temp[1], "=");
-			temp[1] = free_join(temp[1], expand_str(temp[i], NULL));
+			temp[1] = free_join(temp[1], get_rid_q(temp[i], NULL));
 		}
 	}
 	else
