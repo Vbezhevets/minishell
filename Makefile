@@ -1,7 +1,7 @@
 NAME  = minishell
 
 CC    = cc
-CFLAGS= -I/usr/local/opt/readline/include -g # Add any other flags you need here
+CFLAGS= -I/usr/local/opt/readline/include -g
 LDFLAGS= -L/usr/local/opt/readline/lib -lreadline 
 RM    = rm -rf
 

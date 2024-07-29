@@ -50,12 +50,12 @@ int check_cmd(t_cmd **cmd, t_data *data)
 {
 	char *just_name;
 	
-	if (ft_strchr((*cmd)->args[0], '/'))
-	{
-		just_name = ft_trimend((*cmd)->args[0], '/');
- 		free((*cmd)->args[0]);
-		(*cmd)->args[0] = just_name;
-	}
+	// if (ft_strchr((*cmd)->args[0], '/'))
+	// {
+	// 	just_name = ft_trimend((*cmd)->args[0], '/');
+ 	// 	free((*cmd)->args[0]);
+	// 	(*cmd)->args[0] = just_name;
+	// }
 	if (!is_bltin(*cmd) && 
 		!((*cmd)->path = get_cmd_path(data->envp, (*cmd)->args[0])))
 		{

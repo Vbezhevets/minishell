@@ -68,9 +68,9 @@ static int	ft_length(char *s)
 			rdr_l = 2;
 		else if (tok_detect(s) == RL || tok_detect(s) == LR || tok_detect(s) == PIPE)
 			rdr_l = 1;
-		if (rdr_l != 0 && !(s - start)) //  возрашаем значение редиректа
+		if (rdr_l != 0 && !(s - start)) // возрашаем значение редиректа
 			return (rdr_l);
-		if (rdr_l != 0 && (s - start)) // возврашаем значение перед редиерктом
+		if (rdr_l != 0 && (s - start)) //  был сдвиг до встречи редиректа, возврашаем значение перед редиерктом
 			return (s - start);
 		s += quot_detect(s);
 	}
@@ -110,33 +110,7 @@ t_token *create_tok(char *input_str, t_data *data)
 	token->exp = 1; //and
 	return (token);
 }
-/*
-void	tokenizer(char *input_str, t_token **tok_list,  int *tok_qty)
-{
-	t_token	*token;
 
-	while (*input_str)
-	{
-		while (*input_str && ft_strchr(DELIM, *input_str))
-			input_str++;
-		if (*input_str == '\0')
-			return;
-		if (*tok_qty == 0)
-		{
-			*tok_list = create_tok(input_str);
-			token = *tok_list;
-		}
-		else
-		{
-			token->next = create_tok(input_str);
-			token->next->prev = token;
-			token = token->next;
-		}
-		input_str = input_str + token->length;
-		*tok_qty = *tok_qty + 1;
-	}
-}
-*/
 
 t_token	*tokenizer(char *input_str, t_data *data)
 {
@@ -162,6 +136,7 @@ t_token	*tokenizer(char *input_str, t_data *data)
 			token = token->next;
 		}
 		input_str = input_str + token->length;
+		// *tok_qty = *tok_qty + 1;
 	}
 	return (tok_list);
 }
