@@ -1,5 +1,4 @@
 #include "../minishell.h"
-#include <complex.h>
 #include <stdio.h>
 
 char	*get_cmd_path(char **envp, char *cmd)

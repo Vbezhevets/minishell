@@ -1,4 +1,4 @@
-#include "minishell.h"
+ #include "minishell.h"
 #include <stdio.h>
 
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv, char **envp)
 	// 	char *line;
 	// 	line = get_next_line(fileno(stdin));
 	// 	input = ft_strtrim(line, "\n");
-	// 	free(line);
+	// 	free(line); pidor
 	// }
 		if (input)
 		{

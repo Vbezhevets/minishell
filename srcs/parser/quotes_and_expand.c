@@ -24,6 +24,28 @@ char *exp_var(char *var_name, t_data *data)
 /// раскрыть $ в отдельный массив строк
 /// последовательно склеить
 
+int no_extr_need(char *str, char q)
+{
+	int	i;
+	int	k;
+	int	qcount;
+
+	if (!ft_strchr(str, '$'))
+		return (0);
+	i = 0;
+	while (str[i] && str[i] != '$')
+			i++;
+	k = 0;
+	qcount = 0;
+	while (k <= i)
+	{
+		if (str[k] == q)
+			qcount++;
+		k++;
+	}
+		return (qcount % 2);
+}
+
 char *expand_var(char *str, t_data *data)
 {
 	char	*res;
@@ -45,6 +67,8 @@ char *expand_var(char *str, t_data *data)
 	
 	while(unq[i])
 	{
+		if (no_extr_need(unq, '\"'))
+			return(unq);
 		while (unq[i] && unq[i] != '$')
 			i++;
 		temp = ft_substr(unq, 0, i);
@@ -71,46 +95,52 @@ char *expand_var(char *str, t_data *data)
 	return (new);
 }
 
-t_token *expand_tokens(t_token **in_token)
+
+
+
+void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
 {
 	t_token	*next;
-	t_token	*expanded_tokens;
-	t_data	*data; 
 
-
-	data = (*in_token)->data;
-	if (!(*in_token)->exp || !ft_strset((*in_token)->value, "$\"\'"))
-		return (*in_token);
-	else if (!ft_strchr((*in_token)->value, '$'))
-	{
-		(*in_token)->value = expand_str((*in_token)->value, *in_token);
-		return (*in_token);
-	}
-	else 
-	 	expanded_tokens = tokenizer(expand_var((*in_token)->value, data), data);
-	if (!expanded_tokens)
-		expanded_tokens = create_tok("", data);
-	if ((*in_token)->prev) // means not first
-	{
-		(*in_token)->prev->next = expanded_tokens;
-		expanded_tokens->prev = (*in_token)->prev;
-	}
+	if ((in_token)->prev) // means not first
+		{
+			(in_token)->prev->next = *expanded;
+			(*expanded)->prev = (in_token)->prev;
+		}
 	else
-		data->tok_list = expanded_tokens;
-	if ((*in_token)->next)
+		data->tok_list = *expanded;
+	if ((in_token)->next)
 	{
-		(*in_token)->next->prev = expanded_tokens;
-		next = expanded_tokens;
+		(in_token)->next->prev = *expanded;
+		next = *expanded;
 		while (next->next)
 			next = next->next;
-		next->next = (*in_token)->next;
+		next->next = (in_token)->next;
 	}
-	// free((*in_token)->value);
-	// 	(*in_token)->value = NULL;
-	free(*in_token);
-		*in_token = NULL;
-	return (expanded_tokens);
 }
 
-// сначала проверяет существование всех входящих файлов в редиректах 
-// потом 
+t_token *expand_tokens(t_token **in_token)
+{
+	t_token	*expanded_tok;
+	t_data	*data; 
+
+	data = (*in_token)->data;
+	if (!(*in_token)->exp || !ft_strset((*in_token)->value, "$\"\'")) //
+		return (*in_token);
+	else if (no_extr_need((*in_token)->value, '\''))
+	{
+		(*in_token)->value = expand_str((*in_token)->value, *in_token);
+		(*in_token)->exp = 0;
+		return (*in_token);
+	}
+	else
+	 	expanded_tok = tokenizer(expand_var((*in_token)->value, data), data);
+	if (!expanded_tok)
+		expanded_tok = create_tok("", data);
+	connect_tok_list(&expanded_tok, *in_token, data);
+	free(*in_token);
+		*in_token = NULL;
+		expanded_tok->exp = 0; //and
+	return (expanded_tok);
+}
+ 
