@@ -1,4 +1,5 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
             "name": "debug parent",
@@ -22,7 +23,8 @@
                     "text": "-gdb-set disassembly-flavor intel",
                     "ignoreFailures": true
                 }
-            ]
+            ],
+            "preLaunchTask": "build"  // Убедитесь, что эта строка присутствует
         },
         {
             "name": "debug child",
@@ -56,7 +58,8 @@
                     "text": "-gdb-set disassembly-flavor intel",
                     "ignoreFailures": true
                 }
-            ]
+            ],
+            "preLaunchTask": "build"  // Убедитесь, что эта строка присутствует
         }
     ]
 }

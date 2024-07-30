@@ -15,8 +15,8 @@
 
 # define DELIM " \t\n"
 # define DELIMQ " \n\t\"\'"
-# define Q1 "\'"
-# define Q2 "\""
+# define Q '\''
+# define QQ '\"'
 
 
 typedef enum s_type
@@ -119,6 +119,13 @@ typedef struct s_var
 	char			*value;
 	struct s_var	*next;
 } t_var;
+
+typedef struct s_str
+{
+	char			*str;
+	struct s_str	*next;
+	struct s_str	*prev;
+} t_str;
 
 typedef struct s_data
 {

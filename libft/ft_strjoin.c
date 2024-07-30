@@ -91,7 +91,8 @@ char	*free_join(char *a, char *b)
 		while (*b != '\0')
 			(*new++ = *b++);
 	}
-	free(beg_a);
+	if (beg_a)
+		free(beg_a);
 	a = NULL;
 	*new = '\0';
 	return (ret);

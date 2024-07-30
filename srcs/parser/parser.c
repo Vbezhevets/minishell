@@ -109,7 +109,7 @@ t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 {
 	while (*token)
 	{
-		*token = expand_tokens(token);
+		*token = expand_tokens(token); //tok_detect?
 		if (*token && (*token)->P < 3)
 		{
 			cmd_node = create_node(CMD_NODE);

@@ -16,6 +16,7 @@ char *exp_var(char *var_name, t_data *data)
 			return (var->value);
 		var = var->next;
 	}
+	free(var_name);
 	// printf ("%s is ", var_name);
 	// error("wrong var name"); 
 	return (NULL);
@@ -69,55 +70,47 @@ char *add_str(char *res, char *beg, char *var)
 	return (new);
 }
 
-char *expand_str(char *str, t_data *data)
+char *expand_str(char *str, t_data *data, int i, int k)
 {
 	char	*res;
-	char	*unq;
-	char	*var_name;
 	char	*var_val;
 	char 	*beg;
-	int		i;
-	int		k;
 	
-	i = 0;
-	k = 0;
-	unq = get_rid_q(str, NULL);
 	res = NULL;
 	beg = NULL;
-	
-	while(unq[i])
+	if (!str)
+		return (NULL);
+	while(str[i])
 	{
-		if (no_extr_need(unq, '\"'))
-			return(unq);
-		while (unq[i] && unq[i] != '$')
+		// if (no_extr_need(str, '\"'))
+		// 	return(str);
+		while (str[i] && str[i] != '$')
 			i++;
-		beg = ft_substr(unq, 0, i);
-		if (unq[i] == '$')
+		beg = ft_substr(str, 0, i);
+		if (str[i] == '$')
 		{
 			i++;
 			k = i;
-			while (unq[k] && (ft_isalnum(unq[k]) || unq[k] == '_'))
+			while (str[k] && (ft_isalnum(str[k]) || str[k] == '_'))
 				k++;
-			if (unq[i] == '?')
+			if (str[i] == '?')
 			{
 				var_val = ft_itoa(data->ex_stat);
 				k++;
 			}
 			else if (k > i)
-			{
-				var_name = ft_substr(unq, i, k - i);
- 				var_val = exp_var(var_name, data);
-				free(var_name);
-			}
+ 				var_val = exp_var(ft_substr(str, i, k - i), data);
 			else
 				var_val = allocpy("$");
 			res = (add_str(res, beg, var_val));
 		}
 		else 
 			return(add_str(res, beg, NULL));
-		unq = unq + k;
+		str = str + k;
 		i = 0;
 	}
+	if (!res)
+		return (allocpy("\0"));
 	return (res);
 }
 
@@ -145,19 +138,22 @@ void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
 t_token *expand_tokens(t_token **in_token)
 {
 	t_token	*expanded_tok;
-	t_data	*data; 
+	t_data	*data;
+	char 	*tok_value;
+	char	*unquot;
+
+	tok_value = (*in_token)->value;
 
 	data = (*in_token)->data;
-	if (!(*in_token)->exp || !ft_strset((*in_token)->value, "$\"\'")) //
+	if (!(*in_token)->exp || !ft_strset(tok_value, "$\"\'")) //
 		return (*in_token);
 	else if (no_extr_need((*in_token)->value, '\''))
-	{
-		(*in_token)->value = get_rid_q((*in_token)->value, *in_token);
-		(*in_token)->exp = 0;
-		return (*in_token);
-	}
+		(*in_token)->value = get_rid_q(tok_value, *in_token);
 	else
-		(*in_token)->value = expand_str((*in_token)->value, data);
+	{
+		unquot = get_rid_q(tok_value, *in_token);
+		(*in_token)->value = expand_str(unquot, data, 0, 0);
+	}
 	/*	expanded_tok = tokenizer(expand_str((*in_token)->value, data), data);
 	if (!expanded_tok)
 		expanded_tok = create_tok("", data);

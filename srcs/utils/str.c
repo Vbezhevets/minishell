@@ -15,49 +15,85 @@ int strnlcmp(char *str1, char *str2)
         return (1);
     return 0;
 }
-char *del_quotes(char *str, char q, int i)
-{
-	char **temp;
-	char *res;
+// char *del_quotes(char *str, char q, int i)
+// {
+// 	char **temp;
+// 	char *res;
 
-	res = NULL;
-	temp = ft_split(str, q);
+// 	res = NULL;
+// 	temp = ft_split(str, q);
 
-	while (temp[i])
-	{
-		res = free_join (res, temp[i]);
-		i++;
-	}
-	return res;
-}
-
+// 	while (temp && temp[i])
+// 	{
+// 		res = free_join (res, temp[i]);
+// 		i++;
+// 	}
+// 	if (!res)
+// 		return (allocpy("\0")); //need free
+// 	return res;
+// }
+/*
 char	*get_rid_q(char *input, t_token *token)
 {
-	char *res;
-
-	char	q1 = '\'';
-	char	q2 = '\"';
+	char	*res;
 	int		i;
-	
+	int		k;
+	char	qs[2];
+
+	qs[0] = '\'';
+	qs[1] = '\"';
 	if (token)
 		token->exp = 0;
 	i = 0;
-	while (input[i])
+	k = 0;
+	res = NULL;
+	while (k < 2)
 	{
-		if (input[i] == q1 || input[i] == q2)
-			break;
-		i++;
+		while (input[i])
+		{
+			if (input[i] == qs[k])
+				break;
+			i++;
+		}
+		if (input[i] == qs[k])// && !ft_strchr(input, '$')))
+			res = del_quotes(input, qs[k], 0);
+		k++;
+		// free(input);
+		if (res)
+			input = res;
+		i = 0;
 	}
-	if (input[i] == q1 || (input[i] == q2))// && !ft_strchr(input, '$')))
-	{
-		res = del_quotes(input, input[i], 0);
-		if (strcmp(res, input))
-			free(input);
-	}
-	else
-		return (input);
 	return (res);
-}
+} */
+
+// char	*get_rid_q(char *input, t_token *token)
+// {
+// 	char	*res;
+// 	int		i;
+// 	char	qs[2];
+
+// 	qs[0] = '\'';
+// 	qs[1] = '\"';
+// 	if (token)
+// 		token->exp = 0;
+// 	i = 0;
+
+// 	while (input[i])
+// 	{
+// 		if (input[i] == qs[0] || input[i] == qs[1])
+// 			break;
+// 		i++;
+// 	}
+// 	if (input[i] == qs[0] || (input[i] == qs[1]))// && !ft_strchr(input, '$')))
+// 	{
+// 		res = del_quotes(input, input[i], 0);
+// 		if (strcmp(res, input))
+// 			free(input);
+// 	}
+// 	else
+// 		return (input);
+// 	return (res);
+// }
 
 int ft_strset(char *str, char *set)
 {
