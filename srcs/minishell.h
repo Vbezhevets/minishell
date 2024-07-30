@@ -169,15 +169,16 @@ int		strnlcmp(char *str1, char *str2);
 char	*get_rid_q(char *input, t_token *token);
 int		ft_strset(char *str, char *set);
 char	**add_str_arr(char **old, char *str);
+char	*allocpy(char *str);
 
-void	print_tree(t_node *node, int intent);
 
 void	error(char *s1, char *s2);
 void	free_all(t_data *data);
 void	free_and_null_(char **a);
 
-void print_cmd_fields(t_cmd **cmd_array, int cmd_count); //remove
 
+void	print_tree(t_node *node, int intent);
+void	print_cmd_fields(t_cmd **cmd_array, int cmd_count); //remove
 
 
 

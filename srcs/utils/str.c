@@ -1,6 +1,11 @@
 #include "../minishell.h"
 #include <string.h>
 
+char	*allocpy(char *str)
+{
+	return (ft_substr(str, 0, ft_strlen(str)));
+}
+
 int strnlcmp(char *str1, char *str2)
 {
     if (!str1 || !str2)

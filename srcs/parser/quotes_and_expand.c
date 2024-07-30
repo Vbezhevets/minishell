@@ -75,7 +75,6 @@ char *expand_str(char *str, t_data *data)
 	char	*unq;
 	char	*var_name;
 	char	*var_val;
-	char	*new;
 	char 	*beg;
 	int		i;
 	int		k;
@@ -83,7 +82,6 @@ char *expand_str(char *str, t_data *data)
 	i = 0;
 	k = 0;
 	unq = get_rid_q(str, NULL);
-	new = NULL;
 	res = NULL;
 	beg = NULL;
 	
@@ -100,19 +98,19 @@ char *expand_str(char *str, t_data *data)
 			k = i;
 			while (unq[k] && (ft_isalnum(unq[k]) || unq[k] == '_'))
 				k++;
-			if (k > i)
+			if (unq[i] == '?')
 			{
-				if (unq[i] == '?')
-					var_val = ft_itoa(data->ex_stat);
-				else
-				{
-					var_name = ft_substr(unq, i, k - i);
-	 				var_val = exp_var(var_name, data);
-					free(var_name);
-				}
+				var_val = ft_itoa(data->ex_stat);
+				k++;
+			}
+			else if (k > i)
+			{
+				var_name = ft_substr(unq, i, k - i);
+ 				var_val = exp_var(var_name, data);
+				free(var_name);
 			}
 			else
-				var_val = ft_strjoin("", "$");
+				var_val = allocpy("$");
 			res = (add_str(res, beg, var_val));
 		}
 		else 
@@ -120,7 +118,7 @@ char *expand_str(char *str, t_data *data)
 		unq = unq + k;
 		i = 0;
 	}
-	return (new);
+	return (res);
 }
 
 void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)

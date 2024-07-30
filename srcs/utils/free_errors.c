@@ -84,11 +84,16 @@ void	free_cmds(t_cmd *cmd)
 		free_field(temp->from_file);
 		// free(temp->her_doc);
 		if (temp->path)
+		{
 			free(temp->path);
-		temp->path = NULL;
-		free_and_null_(temp->args);
+			temp->path = NULL;
+		}
 		if (temp->args)
+		{	
+			free_and_null_(temp->args);
 			free(temp->args);
+			temp->args = NULL;
+		}
 		free(temp);
 		temp = NULL;
 	}
