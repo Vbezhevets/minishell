@@ -8,19 +8,13 @@ t_data *init_data(t_data *data, char **sys_envp)
 	if (!data)
 		exit(1); //d
 	data->var = (t_var *)malloc(sizeof(t_var));
-	if (!data->var)
-		return(printf("alloc error"), free(data), exit(12), NULL);
-	data->var->next = NULL;
-	data->var->value = NULL;
-	data->var->key = NULL;
+	//if
 	data->envpc = envpcpy(data, sys_envp, &data->envp, data->var);
 	data->tok_quantity = 0;
 	data->cmd_qty = 0;
 	data->tok_list = NULL;
 	data->cmd_list = NULL;
 	data->tree = NULL;
-	// data->pipe[0] = -1;
-	// data->pipe[1] = -1;
 	data->next_pipe[0] = -1;
 	data->next_pipe[1] = -1;
 	data->prev_pipe[0] = -1;
@@ -55,8 +49,12 @@ int main(int argc, char **argv, char **envp)
 			break;
 		if (input)
 		{
-			data->tok_list = tokenizer(input, data);
-			parser(data);
+			data->tok_list = tokenizer(input, data, NULL);
+			if ((!data->tok_list) || (!parser(data)))
+			{
+				free_all(data);
+				break;
+			}	
 			if (data->tree)
 				travel_tree(data->tree,  0, data);
 			if(data->cmd_list)
@@ -68,6 +66,7 @@ int main(int argc, char **argv, char **envp)
 	}
 	my_exit(data);
 }
+
 int my_exit(t_data *data)
 {
 	int		ex_stat;

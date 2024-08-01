@@ -123,6 +123,8 @@ char	*get_rid_q(char *str, t_token *token)
 	{
 		while (str[i] && !is_q(str[i]))
 			i++;
+		if(i > 0 && str[i - 1] == '=')
+			return (str);
 		chunk = add_chunk(chunk, str, start, i);
 		if (!str[i])
 			break;

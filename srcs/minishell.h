@@ -152,12 +152,12 @@ typedef struct s_data
 
 
 // void	tokenizer(char *input_str, t_token **tok_list,  int *tok_qty);
-t_token	*tokenizer(char *input_str, t_data *data);
+t_token	*tokenizer(char *input_str, t_data *data, t_token *tok_list);
 
 t_token *expand_tokens(t_token **in_token);
 
 t_token *create_tok(char *input_str, t_data *data);
-void 	parser(t_data *data);
+int 	parser(t_data *data);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 // t_token	*create_tok(char *input_str);
 t_cmd	*init_cmd(t_data *data, t_cmd *prev);
@@ -185,7 +185,9 @@ void	error(char *s1, char *s2, t_data *data, int e_number);
 void	free_all(t_data *data);
 void	free_and_null_(char **a);
 void	free_var(t_var *var);
+void	free_tok(t_token *token);
 int		my_exit(t_data *data);
+
 
 void	print_tree(t_node *node, int intent);
 void	print_cmd_fields(t_cmd **cmd_array, int cmd_count); //remove

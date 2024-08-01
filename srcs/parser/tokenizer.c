@@ -12,7 +12,7 @@ int quoted(char *s)
 	while (1)
 	{
 		if (*s == '\0')
-			return (error("quotes error", NULL), -1);
+			return (error("quotes error", NULL, NULL, 1), -1);
 		if (*s == q && *(s - 1) != '\\')
 			break;
 		s++;
@@ -93,8 +93,10 @@ int precedence(t_token *token)
 t_token *create_tok(char *input_str, t_data *data)
 {
 	t_token *token;
-
-	token = (t_token *)malloc(sizeof(t_token));
+	if (ft_length(input_str) >= 0)
+		token = (t_token *)malloc(sizeof(t_token));
+	else
+		return (NULL);
 	// if (!token->value)
 	// 	return (free_tok(token), exit(1), NULL); //handle exit in error.c
 	token->length = ft_length(input_str);
@@ -111,13 +113,34 @@ t_token *create_tok(char *input_str, t_data *data)
 	return (token);
 }
 
+/*
+t_token	*tokenizer(char *input_str, t_data *data, t_token *token)
+{
+	while (*input_str)
+	{
+		while (*input_str && ft_strchr(DELIM, *input_str))
+			input_str++;
+		if (*input_str == '\0')
+			break;
+		if (!token)
+			token = create_tok(input_str, data);
+		else
+		{
+			token->next = create_tok(input_str, data);
+			token->next->prev = token;
+			token = token->next;
+		}
+		if (!token)
+			return(NULL);
+		input_str = input_str + token->length;
+	}
+	return (token);
+} */
 
-t_token	*tokenizer(char *input_str, t_data *data)
+t_token	*tokenizer(char *input_str, t_data *data, t_token *tok_list)
 {
 	t_token	*token;
-	t_token	*tok_list;
 
-	tok_list = NULL;
 	while (*input_str)
 	{
 		while (*input_str && ft_strchr(DELIM, *input_str))
@@ -136,7 +159,6 @@ t_token	*tokenizer(char *input_str, t_data *data)
 			token = token->next;
 		}
 		input_str = input_str + token->length;
-		// *tok_qty = *tok_qty + 1;
 	}
 	return (tok_list);
 }

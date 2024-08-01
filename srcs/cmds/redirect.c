@@ -16,7 +16,7 @@ int rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct)
 		else if (file->P == 1)
 				fd = open(path, O_RDONLY);
 		if (fd < 0)
-			return (free(path), printf("file \"%s\" access error\n", file->value), 0);
+			return (free(path), error(file->value, ": No such file or directory", data, 1), 0);
 		if (file->next)
 			close(fd);
 		file = file->next;

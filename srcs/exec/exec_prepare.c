@@ -51,7 +51,8 @@ int check_cmd(t_cmd **cmd, t_data *data)
 		(*cmd)->path = allocpy((*cmd)->args[0]);
 	else if (!is_bltin(*cmd) &&  !((*cmd)->path = get_cmd_path(data->envp, (*cmd)->args[0])))
 	{
-		error((*cmd)->args[0], "is wrong command");
+		error((*cmd)->args[0], ": command not found", data, 127);
+		data->cmd_qty--;
 		*cmd = (*cmd)->next;
 		data->ex_stat = 127;
 		return (0);

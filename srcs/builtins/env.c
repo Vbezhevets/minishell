@@ -1,16 +1,21 @@
 #include "../minishell.h"
 
+
+
 int add_env_var(t_var **var, char *add_str)
 {
 	char	**temp;
 	int		i;
 
 	temp = ft_split(add_str, '=');
-	// if (!temp)
-		//printf("wrong variable arguments\n"); exit
+	if (!temp)
+		printf("wrong variable arguments\n");
 	i = 0;
 	(*var)->key = temp[0];
-	(*var)->value = temp[1];
+	if (temp[1])
+		(*var)->value = temp[1]; 
+	else
+		(*var)->value = allocpy("\0");
 	(*var)->next = (t_var *)malloc(sizeof(t_var));
 	*var = (*var)->next;
 	free(temp); //?

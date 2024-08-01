@@ -22,7 +22,7 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	cmd->her_doc = NULL;
 	cmd->next = NULL;
 	cmd->prev = prev;
-
+	cmd->path = NULL;
 	return (cmd);
 }
 

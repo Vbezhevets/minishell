@@ -88,7 +88,6 @@ void	free_field(t_cmd_field	*field)
 			temp->value = NULL;
 		}
 		free(temp);
-		temp = NULL;
 	}
 }
 
@@ -116,8 +115,7 @@ void	free_cmds(t_cmd *cmd, t_cmd *temp)
 			free(temp->args);
 			temp->args = NULL;
 		}
-		// free(temp);
-		temp = NULL;
+		free(temp);
 	}
 }
 
