@@ -83,6 +83,7 @@ typedef struct s_node
 	struct	s_node	*right;
 	int				P;
 	int				quot;
+	int				exp;
 }	t_node;
 
 
@@ -145,6 +146,7 @@ typedef struct s_data
 	char	cwd[8192];
 	int		envpc;
 	t_var	*var;
+	int 	f;
 }	t_data;
 
 
@@ -179,10 +181,11 @@ char	**add_str_arr(char **old, char *str);
 char	*allocpy(char *str);
 
 
-void	error(char *s1, char *s2);
+void	error(char *s1, char *s2, t_data *data, int e_number);
 void	free_all(t_data *data);
 void	free_and_null_(char **a);
-
+void	free_var(t_var *var);
+int		my_exit(t_data *data);
 
 void	print_tree(t_node *node, int intent);
 void	print_cmd_fields(t_cmd **cmd_array, int cmd_count); //remove
