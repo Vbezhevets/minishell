@@ -14,7 +14,7 @@ int add_env_var(t_var **var, char *add_str)
 	if (temp[1])
 		(*var)->value = temp[1]; 
 	else
-		(*var)->value = ft_strdup("\0");
+		(*var)->value = allocpy("\0");
 	(*var)->next = (t_var *)malloc(sizeof(t_var));
 	*var = (*var)->next;
 	free(temp); //?
@@ -33,9 +33,6 @@ int envpcpy(t_data *data, char **src_envp, char ***dst_envp, t_var *var)
 	i = 0;
 	while (src_envp[i])
 	{
-		// if (var && var->next) // why??????
-		// 	var = var->next;
-		// else
 		add_env_var(&var, src_envp[i]);
 		(*dst_envp)[i] = (char *)malloc(sizeof(char) * (ft_strlen(src_envp[i]) + 1));
 		// if 

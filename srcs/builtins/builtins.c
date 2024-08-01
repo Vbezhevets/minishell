@@ -1,9 +1,6 @@
 #include "../minishell.h"
 #include <stdio.h>
 
-// value может быть пустым NULL
-//declare x 
-
 int print_vars(t_var *var)
 {
 	int	i;
@@ -41,7 +38,7 @@ int echo(char **args)
 	while (args[++i])
 	{
 		printf("%s", args[i]);
-		if(args[i + 1])
+		if(args[i + 1] && ft_strlen(args[i + 1]) > 0)
 			printf(" ");
 	}
 	printf("\n");
@@ -52,12 +49,6 @@ int echo(char **args)
 	return (0);
 }
 
-int my_exit(t_data *data)
-{
-	// free_all(data);
- 	exit(data->ex_stat);
- 	// exit(0);
-}
 
 int builtin(t_cmd *cmd, t_data *data)
 {
