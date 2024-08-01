@@ -27,7 +27,7 @@ void free_tree(t_node *node)
 		free_tree(node->right);
 	if (node && node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
 	{	
-		// free(node->value);
+		free(node->value);
 		node->value = NULL;
 	}
 	free(node);
@@ -46,6 +46,27 @@ void	free_tok(t_token *token)
 		{
 			free(temp->value);
 			temp->value = NULL;
+		}
+		free(temp);
+	}
+}
+void	free_var(t_var *var)
+{
+	t_var *temp;
+
+	while (var)
+	{
+		temp = var;
+		var = var->next;
+		if (temp->value)
+		{
+			free(temp->value);
+			temp->value = NULL;
+		}
+		if (temp->key)
+		{
+			free(temp->key);
+			temp->key = NULL;
 		}
 		free(temp);
 	}
@@ -71,17 +92,18 @@ void	free_field(t_cmd_field	*field)
 	}
 }
 
-void	free_cmds(t_cmd *cmd)
+void	free_cmds(t_cmd *cmd, t_cmd *temp)
 {
-	t_cmd *temp;
-
 	while (cmd)
 	{	
 		temp = cmd;
 		cmd = cmd->next;
-		free_field(temp->to_to_file);
-		free_field(temp->to_file);
-		free_field(temp->from_file);
+		if (temp->to_to_file)
+			free_field(temp->to_to_file);
+		if (temp->to_file)
+			free_field(temp->to_file);
+		if (temp->from_file)
+			free_field(temp->from_file);
 		// free(temp->her_doc);
 		if (temp->path)
 		{
@@ -94,7 +116,7 @@ void	free_cmds(t_cmd *cmd)
 			free(temp->args);
 			temp->args = NULL;
 		}
-		free(temp);
+		// free(temp);
 		temp = NULL;
 	}
 }
@@ -102,37 +124,30 @@ void	free_cmds(t_cmd *cmd)
 
 void free_all(t_data *data)
 {
+	if (!data)
+		return;
 	if (data->tree)
-	{
 		free_tree(data->tree);
-		// free(data->tree);
-		// data->tree = NULL;
-	}
 	if (data->tok_list)
-	{
 		free_tok(data->tok_list);
-		// free(data->tok_list);
-		// data->tok_list = NULL;
-	}
 	if (data->cmd_list)
-	{
-		free_cmds(data->cmd_list);
-		// free(data->cmd_list);
-		// data->cmd_list = NULL;	
-	}
+		free_cmds(data->cmd_list, NULL);
+	data->f = 1;
 }
 
-void error(char *s1, char *s2)
+void error(char *s1, char *s2, t_data *data, int e) //,data
 {
 	//free
 	if (s2)
 	{
-		write(2, "\"", 1);
+		// write(2, "\"", 1);
 		write(2, s1, ft_strlen(s1));
-		write(2, "\" ", 2);
+		// write(2, "\" ", 2);
 		write(2, s2, ft_strlen(s2));
 	}
 	else 
 		write(2, s1, ft_strlen(s1));
 	write(2, "\n", 1);
+	if (data)
+		data->ex_stat = e;
 }
