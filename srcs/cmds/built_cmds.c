@@ -8,7 +8,7 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
-		error("alloc errror\n", NULL);
+		return (error("alloc errror\n", NULL, data, 12), NULL);
 	// data->cmd[data->cmd_num] = cmd;
 	data->cmd_qty++;
 	cmd->args_qty = 0;
@@ -17,7 +17,7 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	cmd->interp = 1; //
 	cmd->args = NULL;
 	cmd->to_file = NULL;
-	// cmd->to_to_file = NULL;
+	cmd->to_to_file = NULL;
 	cmd->from_file = NULL;
 	cmd->her_doc = NULL;
 	cmd->next = NULL;
@@ -155,7 +155,7 @@ void handle_cmd_args(t_node *node, t_cmd *cmd)
 	// arg = handle_quotes(node->value);
 
     cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);
-
+	
 
 	
 }
