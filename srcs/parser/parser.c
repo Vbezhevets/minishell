@@ -98,7 +98,7 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 			left = left->left;
 		left->left = parse_redir(token, cmd_node->left);
 	}
-	else if (*token && (*token)->P == 1) // word
+	else if (*token && (*token)->P < 3) // word == 1
 		parse_cmd(token, &cmd_node->right);
 	else 
 	{

@@ -41,12 +41,12 @@ char *sum_str(t_str *chunk)
 	prev = chunk;
 	while (prev->prev)
 		prev = prev->prev;
-	chunk = prev;
-	next = chunk;
+	next = prev;
 	while (next)
 	{
 		res = (free_join(res, next->str));
-		free(chunk->prev);
+		// free(next->str);
+		free(next->prev);
 		next->prev = NULL;
 		next = next->next;
 	}

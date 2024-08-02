@@ -7,9 +7,12 @@ t_data *init_data(t_data *data, char **sys_envp)
 	data = (t_data *)malloc(sizeof(t_data));
 	if (!data)
 		exit(1); //d
-	data->var = (t_var *)malloc(sizeof(t_var));
-	//if
+	data->var = var_init();
+	if (!data->var)
+		return (free(data), exit(1), NULL);
 	data->envpc = envpcpy(data, sys_envp, &data->envp, data->var);
+	if (!data->envpc)
+		return (free(data->var), free(data), exit(1), NULL);
 	data->tok_quantity = 0;
 	data->cmd_qty = 0;
 	data->tok_list = NULL;
@@ -35,7 +38,7 @@ int main(int argc, char **argv, char **envp)
 	data = init_data(data, envp);
 	while (1)
 	{
-		// if (1)
+		// if (isatty(fileno(stdin)))
 			input = readline("Slava Ukraini! 🇺🇦 >");
 		// else
 		// {
@@ -77,7 +80,7 @@ int my_exit(t_data *data)
 	if (data->var)
 		free_var(data->var);
 	free_and_null_(data->envp);
+	free(data->envp);
 	free(data);
  	exit(ex_stat);
-
 }

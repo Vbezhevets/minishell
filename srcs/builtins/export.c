@@ -4,24 +4,18 @@
 
 int	check_var_name(char *name)
 {
-	int 	wrong;
 	int		i;
 
 	i = 0;
-	wrong = 0;
 	if (ft_isdigit(name[0]))
-		wrong++;
-	else 
-		while (name[i])
-		{
-			if (!ft_isalnum(name[i]) && name[i] != '_')
-				{
-					wrong++;
-					break;
-				}
-			i++;
-		}
-	return (wrong);
+		return(1);
+	while (name[i])
+	{
+		if (!ft_isalnum(name[i]) && name[i] != '_')
+			return(1);
+		i++;
+	}
+	return (0);
 }
 
 char **get_new_var(char *new_var, t_data *data)

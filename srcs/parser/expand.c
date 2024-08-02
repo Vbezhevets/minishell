@@ -32,7 +32,7 @@ int no_extr_need(char *str, char q)
 	int	qcount;
 
 	if (!ft_strchr(str, '$'))
-		return (0);
+		return (1);
 	i = 0;
 	while (str[i] && str[i] != '$')
 			i++;
@@ -148,11 +148,10 @@ t_token *expand_tokens(t_token **in_token)
 	if (!(*in_token)->exp || !ft_strset(tok_value, "$\"\'")) //
 		return (*in_token);
 	else if (no_extr_need((*in_token)->value, '\''))
-		(*in_token)->value = get_rid_q(tok_value, *in_token);
+		return ((*in_token)->value = get_rid_q(tok_value, *in_token), (*in_token));
 	else
 	{
 		unquot = get_rid_q(tok_value, *in_token);
-
 		expanded_tok = tokenizer(expand_str(unquot, data, 0, 0), data, NULL);
 		if (!expanded_tok)
 			expanded_tok = create_tok("", data);

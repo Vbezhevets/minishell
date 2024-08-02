@@ -173,6 +173,7 @@ int		rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct);
 
 int		envpcpy(t_data *data, char **src_envp, char ***dst_envp, t_var *var);
 int		exp0rt(char *arg, t_var *var, t_data *data);
+t_var 	*var_init();
 
 int		strnlcmp(char *str1, char *str2);
 char	*get_rid_q(char *input, t_token *token);

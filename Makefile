@@ -1,7 +1,7 @@
 NAME  = minishell
 
 CC    = cc
-CFLAGS= -I/usr/local/opt/readline/include -g
+CFLAGS= -I/usr/local/opt/readline/include -g #-fsanitize=address
 LDFLAGS= -L/usr/local/opt/readline/lib -lreadline 
 RM    = rm -rf
 
@@ -30,12 +30,12 @@ SRCS  = \
 			${UTILS_DIR}/free_errors.c \
 			${BUILTINS_DIR}/builtins.c \
 			${BUILTINS_DIR}/export.c \
+			${BUILTINS_DIR}/env.c \
 			${UTILS_DIR}/str.c \
 			${UTILS_DIR}/test.c \
 
 OBJSDIR     = ${SRCSDIR}/objs
 OBJS        = $(SRCS:${SRCSDIR}/%.c=${OBJSDIR}/%.o)
-
 
 all   : $(NAME)
 
