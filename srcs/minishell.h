@@ -18,6 +18,10 @@
 # define Q '\''
 # define QQ '\"'
 
+#define BLUE "\033[34m"
+#define YELLOW "\033[33m"
+#define RESET "\033[0m"
+
 
 typedef enum s_type
 {
@@ -180,6 +184,7 @@ char	*get_rid_q(char *input, t_token *token);
 int		ft_strset(char *str, char *set);
 char	**add_str_arr(char **old, char *str);
 char	*allocpy(char *str);
+int		is_empty(char *str);
 
 
 void	error(char *s1, char *s2, t_data *data, int e_number);

@@ -62,18 +62,11 @@ int check_cmd(t_cmd **cmd, t_data *data)
 
 int reset_descrpt(t_data *data)
 {
-	// if (data->cmd_qty < 2)
-	// 	return (0);
-	if (dup2(data->std_in, STDIN_FILENO) == -1)
-		return perror("dup2 std_in"), -1;
-	if (data->std_out != STDOUT_FILENO)
-		if (dup2(data->std_out, STDOUT_FILENO) == -1)
-			return perror("dup2 std_out (from reset)"), -1; 
-	if (data->std_in != -1)
-        close(data->std_in);
-    if (data->std_out != -1)
-        close(data->std_out);
-	return (0);
+    if (dup2(data->std_in, STDIN_FILENO) == -1)
+    	return (perror("dup2 std_in"), -1);
+    if (dup2(data->std_out, STDOUT_FILENO) == -1)
+        return (perror("dup2 std_out"), -1);
+    return 0;
 }
 
 
@@ -124,7 +117,7 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 			cmd->pid = fork();
 			if (cmd->pid == 0)
 				exec(data, cmd);
-			waitpid(cmd->pid, &cmd->ex_stat, WUNTRACED);
+			waitpid(cmd->pid, &cmd->ex_stat, 0);
 		}
 		if (!cmd->next)
 			data->ex_stat = cmd->ex_stat;
@@ -133,6 +126,3 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 		reset_descrpt(data);
 	return (0);
  } 
-
-
-

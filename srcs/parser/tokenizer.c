@@ -62,8 +62,10 @@ static int	ft_length(char *s)
 	start = s;
 	while (*s && !ft_strchr(DELIM, *s))
 	{
-		if (quot_detect(s) != 1 && quoted(s) > 0)
-			s += quoted(s);
+		//if (quot_detect(s) != 1 && quoted(s) > 0)
+
+		// if (quot_detect(s) != 1 && quoted(s) > 0)
+		// 	s += quoted(s);
 		if (tok_detect(s) == RLRL || tok_detect(s) == LRLR)
 			rdr_l = 2;
 		else if (tok_detect(s) == RL || tok_detect(s) == LR || tok_detect(s) == PIPE)

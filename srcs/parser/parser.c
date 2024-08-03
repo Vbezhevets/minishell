@@ -30,11 +30,11 @@ t_node* tok_to_nod(t_token *token)
 
 	node = create_node(token->type, token->data);
 	node->P = token->P;
-	if (token->type > 2)
-		node->quot = 0;
-	else
-	 	node->quot = token->type;
-	node->value = token->value;
+	// if (token->type > 2)
+	// 	node->quot = 0;
+	// else
+	//  	node->quot = token->type;
+	// node->value = token->value;
 	node->value = (char *)malloc(sizeof(char) * (token->length + 1));
 	// if
 	ft_strcpy(node->value, token->value);
@@ -45,16 +45,18 @@ t_node* tok_to_nod(t_token *token)
 void *parse_redir(t_token **token, t_node *left)
 {
 	t_node	*rdr_node;
+	t_token	*file_token;
  
 	*token = expand_tokens(token);
-	if (!(*token)->next || (*token)->next->type > 2)
+	file_token = (*token)->next;
+	if (!file_token || file_token->type > 2)
 		error("wrong redirect", NULL, (*token)->data, 2);
 	while(left && left->left)
-		left = left->left;
+		left = left->left; // go to the edge to write on last leaf of brench to begin redirect from this
 	rdr_node = create_node(RDRCT_NODE, (*token)->data);
-	rdr_node->left = tok_to_nod((*token)->next);
+	rdr_node->left = tok_to_nod(expand_tokens(&file_token)); //expand or just get rid q?
 	rdr_node->left->type = (*token)->type + 10; // assign type of redirect to file-token;
-	rdr_node->left->left = tok_to_nod(*token);
+	rdr_node->left->left = tok_to_nod(*token); //
 	*token = (*token)->next;
 	*token = (*token)->next;
 	if (*token && (*token)->P == 2)

@@ -30,18 +30,20 @@ int env(t_data *data)
 }
 
 
-int echo(char **args)
+int echo(char **args, int i, int n)
 {
-	int	i;
-
-	i = 0;
 	while (args[++i])
 	{
-		printf("%s", args[i]);
-		if(args[i + 1] && ft_strlen(args[i + 1]) > 0)
+		if (strnlcmp(args[i], "-n"))
+			n = 1;
+		else 
+			printf("%s", args[i]);
+		if (args[i + 1] && ft_strlen(args[i + 1]) > 0 && !strnlcmp(args[i], "-n"))
 			printf(" ");
 	}
-	printf("\n");
+	if (!n)
+		printf("\n");
+	// while(args[i])
 
 	// if (args[1] = "-n")
 	// while(args[i])
@@ -72,8 +74,12 @@ int builtin(t_cmd *cmd, t_data *data)
 	if (strnlcmp(cmd->args[0], "env"))
 		return(env(data));
 	if (strnlcmp(cmd->args[0], "echo"))
-		return(echo(cmd->args));
+		return(echo(cmd->args, 0, 0));
 	if (strnlcmp(cmd->args[0], "exit"))
-		my_exit(data);
+	{
+		// if (!cmd->next || (cmd->prev && !strnlcmp(cmd->prev->args[0], "exit")))
+		if (data->cmd_qty == 1)
+			my_exit(data);
+	}
 	return (1);
 }

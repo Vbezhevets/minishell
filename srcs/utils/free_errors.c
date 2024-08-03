@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include <time.h>
 #include <unistd.h>
 
 void	free_and_null_(char **a)
@@ -44,10 +45,12 @@ void	free_tok(t_token *token)
 		token = token->next;
 		if (temp->value)
 		{
+
 			free(temp->value);
 			temp->value = NULL;
 		}
 		free(temp);
+		temp = (NULL);
 	}
 }
 void	free_var(t_var *var)
@@ -116,6 +119,7 @@ void	free_cmds(t_cmd *cmd, t_cmd *temp)
 			temp->args = NULL;
 		}
 		free(temp);
+		temp = NULL;
 	}
 }
 

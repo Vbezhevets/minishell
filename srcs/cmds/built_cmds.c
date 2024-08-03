@@ -112,7 +112,7 @@ void assign_fild(t_node *node, t_cmd *cmd)
 	t_cmd_field *field;
 	
 	if (node->type == ARG  || node->type == CMD)
-		handle_cmd_args(node, cmd);
+		cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);//handle_cmd_args(node, cmd);
 	else
 	{
 		field = create_field(node->value, node->type); // check ""
@@ -144,20 +144,6 @@ void build_cmd(t_node *node, t_data *data, t_cmd *cmd, t_cmd_field *exist_arg)
 			exist_arg = exist_arg->next;
 		exist_arg->next = create_field(node->value, node->type);
 	}
-}
-
-void handle_cmd_args(t_node *node, t_cmd *cmd)
-{
-	char 	*arg;
-	
-	// ft_strchr(node->value, '='); //!!!!!!!!!!!!!!!!
-
-	// arg = handle_quotes(node->value);
-
-    cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);
-	
-
-	
 }
 
 void travel_tree(t_node *node,  int depth, t_data *data)

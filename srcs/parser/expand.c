@@ -128,11 +128,11 @@ void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
 	if ((in_token)->next)
 	{
 		(in_token)->next->prev = *expanded;
-		next = *expanded;
-		next->exp = 0;
-		while (next->next)
-			next = next->next;
-		next->next = (in_token)->next;
+		(*expanded)->next = (in_token)->next;
+		(*expanded)->exp = 0;
+		// while (next->next)
+		// 	next = next->next;
+		// next->next = (in_token)->next;
 	}
 }
 
@@ -156,7 +156,8 @@ t_token *expand_tokens(t_token **in_token)
 		if (!expanded_tok)
 			expanded_tok = create_tok("", data);
 		connect_tok_list(&expanded_tok, *in_token, data);
-		free_tok(*in_token);
+		free((*in_token)->value);
+		free((*in_token));
 		if (unquot && unquot[0] && unquot[0] != '$' && unquot[1])
 			expanded_tok->exp = 0;
 		return (expanded_tok);

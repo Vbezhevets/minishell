@@ -6,6 +6,20 @@ char	*allocpy(char *str)
 	return (ft_substr(str, 0, ft_strlen(str)));
 }
 
+int is_empty(char *str)
+{
+	int i = 0;
+	if (!ft_strlen(str))
+		return (1);
+	while(*str)
+	{
+		if (!ft_strset(str, DELIM))
+			return(0);
+		str++;
+	}
+	return(1);
+}
+
 int strnlcmp(char *str1, char *str2)
 {
     if (!str1 || !str2)
@@ -21,6 +35,8 @@ int ft_strset(char *str, char *set)
 	char	*b;
 	int		i;
 
+	if (!str || !set)
+		return (0);
 	i = 0;
 	while (*set)
 	{
