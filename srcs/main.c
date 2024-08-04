@@ -52,7 +52,6 @@ int main(int argc, char **argv, char **envp)
 {
 	t_data			*data;
 	char			*input;
-	unsigned int	ex_stat;
 
 	data = init_data(data, envp);
 	while (1)

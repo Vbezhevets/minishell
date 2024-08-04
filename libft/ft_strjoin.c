@@ -69,6 +69,7 @@ char	*ft_str3join(char *a, char *b, char *c)
 	*new = '\0';
 	return (ret);
 }
+
 char	*free_join(char *a, char *b)
 {
 	char	*new;

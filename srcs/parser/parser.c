@@ -38,6 +38,9 @@ t_node* tok_to_nod(t_token *token)
 	node->value = (char *)malloc(sizeof(char) * (token->length + 1));
 	// if
 	ft_strcpy(node->value, token->value);
+	// if (!token->exp)
+	// 	free(token->value);
+	// token->value = NULL;
 	node->exp = token->exp;
  	return node;
 }

@@ -6,17 +6,18 @@ char *exp_var(char *var_name, t_data *data)
 {
 	int	i;
 	t_var	*var;
+	char  	*value;
 
 	i = 0;
 	var = data->var;
-	
 	while (var)
 	{
 		if (strnlcmp(var->key, var_name))
-			return (var->value);
+			return (free(var_name), var->value);
 		var = var->next;
 	}
 	free(var_name);
+	var_name = NULL;
 	// printf ("%s is ", var_name);
 	// error("wrong var name"); 
 	return (NULL);
@@ -105,7 +106,7 @@ char *expand_str(char *str, t_data *data, int i, int k)
 			res = (add_str(res, beg, var_val));
 		}
 		else 
-			return(add_str(res, beg, NULL));
+			return(add_str(res, beg, NULL)); //kz
 		str = str + k;
 		i = 0;
 	}
@@ -127,12 +128,12 @@ void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
 		data->tok_list = *expanded;
 	if ((in_token)->next)
 	{
+		next = (*expanded)->next;
+		while (next->next)
+			next = next->next;
 		(in_token)->next->prev = *expanded;
-		(*expanded)->next = (in_token)->next;
+		next->next = (in_token)->next;
 		(*expanded)->exp = 0;
-		// while (next->next)
-		// 	next = next->next;
-		// next->next = (in_token)->next;
 	}
 }
 
@@ -142,24 +143,30 @@ t_token *expand_tokens(t_token **in_token)
 	t_data	*data;
 	char 	*tok_value;
 	char	*unquot;
+	char 	*expanded_str;
 
 	tok_value = (*in_token)->value;
 	data = (*in_token)->data;
 	if (!(*in_token)->exp || !ft_strset(tok_value, "$\"\'")) //
 		return (*in_token);
 	else if (no_extr_need((*in_token)->value, '\''))
-		return ((*in_token)->value = get_rid_q(tok_value, *in_token), (*in_token));
+		return ((*in_token)->value = get_rid_q(tok_value, *in_token), free(tok_value), (*in_token));
 	else
 	{
 		unquot = get_rid_q(tok_value, *in_token);
-		expanded_tok = tokenizer(expand_str(unquot, data, 0, 0), data, NULL);
+		expanded_str = (expand_str(unquot, data, 0, 0));
+		expanded_tok = tokenizer(expanded_str, data, NULL);
+		if (expanded_str)
+			free(expanded_str);
 		if (!expanded_tok)
 			expanded_tok = create_tok("", data);
 		connect_tok_list(&expanded_tok, *in_token, data);
 		free((*in_token)->value);
 		free((*in_token));
-		if (unquot && unquot[0] && unquot[0] != '$' && unquot[1])
+		// if (unquot && unquot[0] && unquot[0] != '$' && unquot[1]) // no variable
 			expanded_tok->exp = 0;
+		free(unquot);
+		unquot = NULL;
 		return (expanded_tok);
 	}
 	return (NULL);

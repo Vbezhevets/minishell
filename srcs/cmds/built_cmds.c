@@ -23,6 +23,7 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	cmd->next = NULL;
 	cmd->prev = prev;
 	cmd->path = NULL;
+	cmd->ex_stat = 0;
 	return (cmd);
 }
 
@@ -32,29 +33,6 @@ void add_cmd(t_cmd *cmd, t_data *data)
 		cmd = cmd->next;
 	cmd->next = init_cmd(data, cmd);
 }
-/*
-void *add_to_array(void *old_a, int *qty, void *elem, size_t size)
-{
-	int	i;
-	void *new_a;
-
-	new_a = malloc((*qty + 2) * sizeof(size));
-	i = 0;
-	while (i < *qty)
-	{
-		new_a[i] = malloc(sizeof(old_a[i]));
-		//if (!new_a[i])
-		memcpy(new_a[i], old_a[i], sizeof(void));
-		// free(old[i]);
-		// old[i] = NULL;
-		i++;
-	}
-	new_a[i] = (void *)malloc(sizeof(old_a[i]));
-	memcpy(new_a[i], old_a[i], sizeof(void));
-	new_a[i + 1] = NULL;
-    *qty = *qty + 1;
-	return (new_a);
-} */
 
 char **add_cmd_arg(char **old, int *qty, char *str)
 {
@@ -69,12 +47,13 @@ char **add_cmd_arg(char **old, int *qty, char *str)
 		new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(old[i]) + 1));
 		//if (!new_a[i])
 		ft_strcpy(new_a[i], old[i]);
-		// free(old[i]);
-		// old[i] = NULL;
 		i++;
 	}
-	if(old)
+	if (old)
+	{
 		free_and_null_(old);
+		free(old);
+	}
 	new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
 	//if
 	ft_strcpy(new_a[i], str);
@@ -112,7 +91,7 @@ void assign_fild(t_node *node, t_cmd *cmd)
 	t_cmd_field *field;
 	
 	if (node->type == ARG  || node->type == CMD)
-		cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);//handle_cmd_args(node, cmd);
+		cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);
 	else
 	{
 		field = create_field(node->value, node->type); // check ""

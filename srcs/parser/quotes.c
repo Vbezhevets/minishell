@@ -39,64 +39,21 @@ char *sum_str(t_str *chunk)
 
 	res = NULL;
 	prev = chunk;
-	while (prev->prev)
+	while (prev && prev->prev)
 		prev = prev->prev;
 	next = prev;
 	while (next)
-	{
-		res = (free_join(res, next->str));
-		// free(next->str);
-		free(next->prev);
-		next->prev = NULL;
+	{		
+		res = free_join(res, next->str); //leak ""
+		free(next->str);
+		next->str = NULL;
+		prev = next;
 		next = next->next;
+		free(prev);
 	}
-	// free(next->str);
-	free(next);
-	if (!ft_strlen(res))
-		return (allocpy("\0"));
 	return (res);
 }
-/*
-char *del_quotes(char *str, char q, int i, int f)
-{
-	char	*res;
-	int		start;
-	t_str	*chunk;
-	int		end;
 
-	res = NULL;
-	while (str[++i])
-		// if (i > 0 && str[i] == q)
-		// {
-		// 	chunk = add_chunk(NULL, str, 0, i++);
-		// 	break;
-		// }
-	while (str[i])
-	{
-		if (str[i] == q)
-		{
-			i++;
-			if (f == 0)
-			{
-				start = i;
-				f = 1;
-			}
-			else
-			{
-				chunk = add_chunk(chunk, str, start, i);
-				f = 0;
-				end = i;
-			}
-		}
-		i++;
-		if (!str[i] && i > end)
-			chunk = add_chunk(chunk, str, end, i);
-	}
-	res = (sum_str(chunk));
-	if (!res)
-		return (allocpy("\0")); //need free
-	return res;
-} */
 
 char is_q(char c)
 {
@@ -116,6 +73,8 @@ char	*get_rid_q(char *str, t_token *token)
 	char	q;
 	t_str	*chunk;
 
+	if (!ft_strset(str, "\' \""))
+		return(allocpy(str));
 	chunk = NULL;
 	if (token)
 		token->exp = 0;
@@ -142,34 +101,4 @@ char	*get_rid_q(char *str, t_token *token)
 	}
 	return (sum_str(chunk));
 }
-
-// char	*get_rid_q(char *input, t_token *token)
-// {
-// 	char	*res;
-// 	int		i;
-// 	char	q;
-// 	char    Q;
-
-// 	q = '\'';
-// 	Q = '\"';
-// 	if (token)
-// 		token->exp = 0;
-// 	i = 0;
-
-// 	while (input[i])
-// 	{
-// 		if (input[i] == q || input[i] == Q)
-// 			break;
-// 		i++;
-// 	}
-// 	if (input[i] == q || (input[i] == Q))
-// 	{
-// 		res = del_quotes(input, input[i], 0, -1);
-// 		if (strcmp(res, input))
-// 			free(input);
-// 	}
-// 	else
-// 		return (input);
-// 	return (res);
-// }
 
