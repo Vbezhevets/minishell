@@ -123,7 +123,6 @@ void	free_cmds(t_cmd *cmd, t_cmd *temp)
 	}
 }
 
-
 void free_all(t_data *data)
 {
 	if (!data)

@@ -35,7 +35,7 @@ typedef enum s_type
 	RDRCT_NODE,//7
 	PIPE,	//8
 	CMD_NODE,//9
-	EMPTY,	//10
+	ERROR,	//10
 	CMD,	//11
 	ARG,	//12
 	TO_FILE,//13
@@ -159,11 +159,11 @@ typedef struct s_data
 
 
 // void	tokenizer(char *input_str, t_token **tok_list,  int *tok_qty);
-t_token	*tokenizer(char *input_str, t_data *data, t_token *tok_list);
+t_token	*tokenizer(char *input_str, t_data *data, t_token *tok_list, int expanded);
 
 t_token *expand_tokens(t_token **in_token);
 
-t_token *create_tok(char *input_str, t_data *data);
+t_token *create_tok(char *input_str, t_data *data, int expanded);
 int 	parser(t_data *data);
 void 	travel_tree(t_node *node,  int depth, t_data *data);
 // t_token	*create_tok(char *input_str);

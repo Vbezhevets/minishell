@@ -114,6 +114,12 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 	return (cmd_node);
 }
 
+t_node *parser_error(t_data *data)
+{
+	error("wrong input", NULL, data, 2);
+	return create_node(ERROR, data);
+}
+
 t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 {
 	t_data* data;
@@ -127,17 +133,21 @@ t_node *parse_loop(t_token **token, t_node *cmd_node, t_node *pipe_node)
 			cmd_node = create_node(CMD_NODE, (*token)->data);
 			cmd_node = parse_cmd_node(token, cmd_node);
 		}
-		if (*token && (*token)->type == PIPE)
+		if (*token && (*token)->type == PIPE && (*token)->exp == 1)
 		{
 			if (!cmd_node)
-				return (error("wrong input!!!", NULL, data, 2), NULL);
-			pipe_node = tok_to_nod(*token);
-			pipe_node->left = cmd_node;
-			*token = (*token)->next;
-			if (!*token || ((*token)->P != 1 && (*token)->P != 2))
-				return (error("wrong input", NULL, data, 2), NULL);
-			pipe_node->right = parse_loop(token, NULL, NULL);
+				pipe_node->right = parser_error(data);
+			else
+			{
+				pipe_node = tok_to_nod(*token);
+				pipe_node->left = cmd_node;
+				*token = (*token)->next;
+				if (!*token || ((*token)->P != 1 && (*token)->P != 2))
+					pipe_node->right = parser_error(data);
+				else 
+					pipe_node->right = parse_loop(token, NULL, NULL);
 			return(pipe_node);
+			}
 		}
 		else
 			return cmd_node;
@@ -152,8 +162,8 @@ int parser(t_data *data)
 
 	start = data->tok_list;
 	data->tree = parse_loop(&start, NULL, NULL);
+	// print_tree(data->tree, 0);
 	if (!data->tree)
 		return (0);
 	return (1);
-	// print_tree(data->tree, 0);
 }

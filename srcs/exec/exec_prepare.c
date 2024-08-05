@@ -111,7 +111,7 @@ int	manage_pipes(t_cmd *cmd, t_data *data )
 	}
 	return (0);
 }
-int save_orig_descrpit(t_data *data)
+void save_orig_descrpit(t_data *data)
 {
 	data->std_in = dup(STDIN_FILENO);
 	data->fds[data->fds_c++] = data->std_in;

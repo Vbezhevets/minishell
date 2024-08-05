@@ -162,15 +162,15 @@ t_token *expand_tokens(t_token **in_token)
 	{
 		unquot = get_rid_q(tok_value, *in_token);
 		expanded_str = (expand_str(unquot, data, 0, 0));
-		expanded_tok = tokenizer(expanded_str, data, NULL);
+		expanded_tok = tokenizer(expanded_str, data, NULL, 0);
 		if (expanded_str)
 			free(expanded_str);
 		if (!expanded_tok)
-			expanded_tok = create_tok("", data);
+			expanded_tok = create_tok("", data, 0);
 		connect_tok_list(&expanded_tok, *in_token, data);
 		free((*in_token)->value);
 		free((*in_token));
-		// if (unquot && unquot[0] && unquot[0] != '$' && unquot[1]) // no variable
+		if (unquot && unquot[0] && unquot[0] != '$' && unquot[1]) // no variable
 			expanded_tok->exp = 0;
 		free(unquot);
 		unquot = NULL;
