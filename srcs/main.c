@@ -19,6 +19,7 @@ t_data *init_data(t_data *data, char **sys_envp)
 	data->tok_list = NULL;
 	data->cmd_list = NULL;
 	data->tree = NULL;
+	data->temp = NULL;
 	data->next_pipe[0] = -1;
 	data->next_pipe[1] = -1;
 	data->prev_pipe[0] = -1;
@@ -27,9 +28,9 @@ t_data *init_data(t_data *data, char **sys_envp)
 	data->std_in = 0;
  	data->std_out = 0;
 	data->f = 0;
+	data->fds_c = 3;
 	return(data);
 }
-
 
 void main_loop(t_data *data, char  *input)
 {
@@ -45,7 +46,6 @@ void main_loop(t_data *data, char  *input)
 		handle_cmd(data, data->cmd_list);
 	free_all(data);
 	data->cmd_qty = 0;
-
 }
 
 int main(int argc, char **argv, char **envp)
@@ -86,6 +86,11 @@ int my_exit(t_data *data)
 		free_var(data->var);
 	free_and_null_(data->envp);
 	free(data->envp);
+	while (data->fds_c > 3)
+	{
+		close(data->fds[data->fds_c - 1]);
+		data->fds_c--;
+	}
 	free(data);
  	exit(ex_stat);
 }

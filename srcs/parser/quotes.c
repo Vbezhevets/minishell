@@ -8,9 +8,6 @@ quotes error
 
 /bin/echo ''$?''"42"
 
-
-он открывает за одну проходку вариативность кавычек 
-если одни в других - их не трогает
 */
 #include "../minishell.h"
 
@@ -73,8 +70,8 @@ char	*get_rid_q(char *str, t_token *token)
 	char	q;
 	t_str	*chunk;
 
-	if (!ft_strset(str, "\' \""))
-		return(allocpy(str));
+	// if (!ft_strset(str, "\' \""))
+	// 	return(allocpy(str));
 	chunk = NULL;
 	if (token)
 		token->exp = 0;

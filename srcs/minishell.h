@@ -151,6 +151,9 @@ typedef struct s_data
 	int		envpc;
 	t_var	*var;
 	int 	f;
+	char	*temp;
+	int		fds[1024];
+	int		fds_c;
 }	t_data;
 
 

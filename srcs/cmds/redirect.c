@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+// open_dsrpt
+
 int rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct)
 {
 	char	*path;

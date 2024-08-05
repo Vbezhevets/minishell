@@ -60,12 +60,27 @@ int check_cmd(t_cmd **cmd, t_data *data)
 	return (1);
 }
 
+
+	// data->fds[data->fds_c++] = dup2(data->std_in, STDIN_FILENO);
+	// if (data->fds[data->fds_c] == -1)
+    // 	return (perror("dup2 std_in"), -1);
+    // data->fds[data->fds_c++] = dup2(data->std_out, STDOUT_FILENO);
+	// if (data->fds[data->fds_c] == -1)
+    //     return (perror("dup2 std_out"), -1);
+
 int reset_descrpt(t_data *data)
 {
-    if (dup2(data->std_in, STDIN_FILENO) == -1)
+	if (dup2(data->std_in, STDIN_FILENO) == -1)
     	return (perror("dup2 std_in"), -1);
     if (dup2(data->std_out, STDOUT_FILENO) == -1)
         return (perror("dup2 std_out"), -1);
+	while (data->fds_c > 3)
+	{
+		close(data->fds[data->fds_c - 1]);
+		data->fds_c--;
+	}
+	// close(data->std_in);//
+    // close(data->std_out);//
     return 0;
 }
 
@@ -96,11 +111,17 @@ int	manage_pipes(t_cmd *cmd, t_data *data )
 	}
 	return (0);
 }
+int save_orig_descrpit(t_data *data)
+{
+	data->std_in = dup(STDIN_FILENO);
+	data->fds[data->fds_c++] = data->std_in;
+	data->std_out = dup(STDOUT_FILENO);
+	data->fds[data->fds_c++] = data->std_out;
+}
 
 int	handle_cmd(t_data *data, t_cmd *cmd)
 {
-	data->std_in = dup(STDIN_FILENO);
-	data->std_out = dup(STDOUT_FILENO);
+	save_orig_descrpit(data);
 	while(cmd)
 	{
 		if (getcwd(data->cwd, sizeof(data->cwd)) == NULL)       
@@ -125,4 +146,4 @@ int	handle_cmd(t_data *data, t_cmd *cmd)
 	}
 		reset_descrpt(data);
 	return (0);
- } 
+ }

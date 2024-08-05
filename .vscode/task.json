@@ -5,16 +5,26 @@
             "label": "build",
             "type": "shell",
             "command": "make",
-            "args": [
-                "-f", "${workspaceFolder}/Makefile"  // Убедитесь, что путь к Makefile верный
-            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "problemMatcher": ["$gcc"],
-            "detail": "Компиляция проекта с использованием Makefile"
+            }
+        },
+        {
+            "label": "valgrind",
+            "type": "shell",
+            "command": "valgrind",
+            "args": [
+                "--leak-check=full",
+                "--track-origins=yes",
+                "--track-fds=yes",
+                "${workspaceFolder}/minishell"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         }
     ]
 }
-

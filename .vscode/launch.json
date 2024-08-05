@@ -24,7 +24,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build"  // Убедитесь, что эта строка присутствует
+            "preLaunchTask": "build"
         },
         {
             "name": "debug child",
@@ -59,7 +59,34 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build"  // Убедитесь, что эта строка присутствует
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Run with Valgrind",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/minishell",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build",
+            "postDebugTask": "valgrind"
         }
     ]
 }

@@ -48,7 +48,7 @@ int no_extr_need(char *str, char q)
 		return (qcount % 2);
 }
 
-char *add_str(char *res, char *beg, char *var)
+char *add_str(char *res, char *beg, char *var, t_data *data)
 {
 	char	*new;
 
@@ -68,7 +68,19 @@ char *add_str(char *res, char *beg, char *var)
 		free (var);
 		var = NULL;
 	}
+	if (data->temp)
+	{
+		free(data->temp);
+		data->temp = NULL;
+	}
 	return (new);
+}
+
+char	*get_error_num(t_data *data, int *k)
+{
+	data->temp = ft_itoa(data->ex_stat);
+	(*k)++;
+	return (data->temp);
 }
 
 char *expand_str(char *str, t_data *data, int i, int k)
@@ -83,8 +95,6 @@ char *expand_str(char *str, t_data *data, int i, int k)
 		return (NULL);
 	while(str[i])
 	{
-		// if (no_extr_need(str, '\"'))
-		// 	return(str);
 		while (str[i] && str[i] != '$')
 			i++;
 		beg = ft_substr(str, 0, i);
@@ -95,18 +105,15 @@ char *expand_str(char *str, t_data *data, int i, int k)
 			while (str[k] && (ft_isalnum(str[k]) || str[k] == '_'))
 				k++;
 			if (str[i] == '?')
-			{
-				var_val = ft_itoa(data->ex_stat);
-				k++;
-			}
+				var_val = get_error_num(data, &k); 
 			else if (k > i)
  				var_val = exp_var(ft_substr(str, i, k - i), data);
 			else
 				var_val = allocpy("$");
-			res = (add_str(res, beg, var_val));
+			res = (add_str(res, beg, var_val, data));
 		}
 		else 
-			return(add_str(res, beg, NULL)); //kz
+			return(add_str(res, beg, NULL, data)); //kz
 		str = str + k;
 		i = 0;
 	}
