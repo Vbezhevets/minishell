@@ -125,6 +125,7 @@ void	free_cmds(t_cmd *cmd, t_cmd *temp)
 
 void free_all(t_data *data)
 {
+
 	if (!data)
 		return;
 	if (data->tree)
@@ -133,6 +134,7 @@ void free_all(t_data *data)
 		free_tok(data->tok_list);
 	if (data->cmd_list)
 		free_cmds(data->cmd_list, NULL);
+	zeroing_data(data);
 	data->f = 1;
 }
 

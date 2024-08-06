@@ -117,6 +117,7 @@ t_node *parse_cmd_node(t_token **token, t_node *cmd_node)
 t_node *parser_error(t_data *data)
 {
 	error("wrong input", NULL, data, 2);
+	data->ok = 0;
 	return create_node(ERROR, data);
 }
 

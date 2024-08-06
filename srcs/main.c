@@ -2,6 +2,22 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+void zeroing_data(t_data *data)
+{
+	data->tok_quantity = 0;
+	data->cmd_qty = 0;
+	data->tok_list = NULL;
+	data->cmd_list = NULL;
+	data->tree = NULL;
+	data->temp = NULL;
+	data->next_pipe[0] = -1;
+	data->next_pipe[1] = -1;
+	data->prev_pipe[0] = -1;
+	data->prev_pipe[1] = -1;
+	data->std_in = 0;
+ 	data->std_out = 1;
+	data->ok = 1;
+}
 
 t_data *init_data(t_data *data, char **sys_envp)
 {
@@ -14,21 +30,10 @@ t_data *init_data(t_data *data, char **sys_envp)
 	data->envpc = envpcpy(data, sys_envp, &data->envp, data->var);
 	if (!data->envpc)
 		return (free(data->var), free(data), exit(1), NULL);
-	data->tok_quantity = 0;
-	data->cmd_qty = 0;
-	data->tok_list = NULL;
-	data->cmd_list = NULL;
-	data->tree = NULL;
-	data->temp = NULL;
-	data->next_pipe[0] = -1;
-	data->next_pipe[1] = -1;
-	data->prev_pipe[0] = -1;
-	data->prev_pipe[1] = -1;
 	data->ex_stat = 0;
-	data->std_in = 0;
- 	data->std_out = 0;
 	data->f = 0;
 	data->fds_c = 3;
+	zeroing_data(data);
 	return(data);
 }
 
@@ -39,7 +44,7 @@ int  main_loop(t_data *data, char  *input)
 		return (free_all(data), 1);
 	if (!parser(data))
 		return (free_all(data), 1);
-	if (data->tree)
+	if (data->tree && data->ok)
 		travel_tree(data->tree,  0, data);
 	if (data->cmd_list)
 		handle_cmd(data, data->cmd_list);

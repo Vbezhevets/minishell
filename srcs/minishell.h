@@ -154,6 +154,7 @@ typedef struct s_data
 	char	*temp;
 	int		fds[1024];
 	int		fds_c;
+	int		ok;
 }	t_data;
 
 
@@ -174,6 +175,7 @@ int		exec(t_data *data, t_cmd *cmd);
 int 	builtin(t_cmd *cmd, t_data *data);
 t_cmd_field *create_field(char *input_str, int type);
 
+void	zeroing_data(t_data *data);
 
 int 	redirect(t_cmd **cmd, t_data *data);
 int		rdr(t_cmd_field *file, t_data *data, t_cmd *cmd, int drct);
