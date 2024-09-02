@@ -4,19 +4,19 @@ pipe_sequence
 ├── simple_command
 │   ├── cmd_prefix (optional)
 │   │   └── io_redirect
-│   │       └── (io_file или io_here)
+│   │       └── (io_file or io_here)
 │   ├── cmd_word
 │   │   └── WORD
-│   └── cmd_suffix (опционально)
+│   └── cmd_suffix (optional)
 │       ├── io_redirect
-│       │   └── (io_file или io_here)
+│       │   └── (io_file or io_here)
 │       └── WORD
 ├── pipe_sequence
 │   ├── PIPE
 │   └── simple_command
 simple_command
 
-
+example of enter:
 ls -a < file | grep -p | wc -l
 
         __PIPE___
