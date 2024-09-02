@@ -1,8 +1,8 @@
 NAME  = minishell
 
 CC    = cc
-CFLAGS= -I/usr/local/opt/readline/include -g #-fsanitize=address
-LDFLAGS= -L/usr/local/opt/readline/lib -lreadline 
+CFLAGS = -Wall -Wextra -Werror -g3 #-gdwarf-4 -O0 -fno-omit-frame-pointer -fsanitize=address,leak,undefined
+LDFLAGS = -lreadline
 RM    = rm -rf
 
 LIBDIR= ./libft
@@ -23,7 +23,7 @@ SRCS  = \
 			${PARSER_DIR}/expand.c \
 			${PARSER_DIR}/quotes.c \
 			${CMDS_DIR}/built_cmds.c \
-			${CMDS_DIR}/cmd_fields.c \
+			${CMDS_DIR}/heredoc.c \
 			${CMDS_DIR}/redirect.c \
 			${EXEC_DIR}/exec_prepare.c \
 			${EXEC_DIR}/exec.c \
@@ -33,6 +33,9 @@ SRCS  = \
 			${BUILTINS_DIR}/env.c \
 			${UTILS_DIR}/str.c \
 			${UTILS_DIR}/test.c \
+			${UTILS_DIR}/extra.c \
+			${CMDS_DIR}/build_cmd.c \
+
 
 OBJSDIR     = ${SRCSDIR}/objs
 OBJS        = $(SRCS:${SRCSDIR}/%.c=${OBJSDIR}/%.o)
@@ -40,7 +43,7 @@ OBJS        = $(SRCS:${SRCSDIR}/%.c=${OBJSDIR}/%.o)
 all   : $(NAME)
 
 $(NAME)     : $(OBJS)
-		make --no-print-directory -C ${LIBDIR} all
+		$(MAKE) --no-print-directory -C ${LIBDIR} all
 		$(CC) $(CFLAGS) -o $@ $^ $(LIBFT) $(LDFLAGS)
 
 ${OBJSDIR}/%.o : ${SRCSDIR}/%.c

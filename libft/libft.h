@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ggero <ggero@student.42vienna.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 12:37:06 by bvalerii          #+#    #+#             */
-/*   Updated: 2024/07/23 13:37:33 by bvalerii         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:44:55 by ggero            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <unistd.h>
-# define BUFFER_SIZE 10
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
@@ -26,7 +25,7 @@ int		ft_isprint(int c);
 int		ft_strlen(char *str);
 void	*ft_memset(void *str, int c, size_t n);
 void	ft_bzero(void *s, size_t n);
-void	*ft_memcpy(void *to, void *from, size_t n);
+void	*ft_memcpy(void *to, const void *from, const size_t n);
 void	*ft_memmove(void *to, void *from, size_t n);
 int		ft_strlcpy(char *dst, char *src, size_t n);
 void	ft_strcpy(char *dst, char *src);

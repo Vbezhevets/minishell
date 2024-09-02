@@ -1,5 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_prepare.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/19 17:44:20 by bvalerii          #+#    #+#             */
+/*   Updated: 2024/08/20 10:49:00 by bvalerii         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
-#include <stdio.h>
 
 char	*get_cmd_path(char **envp, char *cmd)
 {
@@ -9,16 +20,17 @@ char	*get_cmd_path(char **envp, char *cmd)
 
 	pathes = NULL;
 	i = 0;
-	while (ft_strncmp("PATH=", envp[i], 5) && envp[i])
+	while (envp[i] && ft_strncmp("PATH=", envp[i], 5))
 		i++;
-	pathes = ft_split(envp[i] + 5, ':');
+	if (envp[i])
+		pathes = ft_split(envp[i] + 5, ':');
 	if (!pathes)
-		return (ft_printf("split error\n"), NULL);
+		return (NULL);
 	i = 0;
 	while (pathes[i])
 	{
 		path = ft_str3join(pathes[i], "/", cmd);
-		if (!access(path, F_OK)) //success
+		if (!access(path, F_OK))
 			return (free_and_null_(pathes), free(pathes), path);
 		free(path);
 		i++;
@@ -28,62 +40,84 @@ char	*get_cmd_path(char **envp, char *cmd)
 	return (NULL);
 }
 
-int is_bltin(t_cmd *cmd)
+int	is_bltin(t_cmd *cmd, t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 7;
 	while (i >= 0)
 	{
-		if (strnlcmp(cmd->args[0], (char *)BUILTINS[i]))
-			{
-				cmd->bi = 1;
-				return (i + 1);
-			}
+		if (strnlcmp(cmd->args[0], data->builtins[i]))
+		{
+			cmd->bi = 1;
+			return (i + 1);
+		}
 		i--;
 	}
 	return (0);
 }
 
-int check_cmd(t_cmd **cmd, t_data *data)
+int	is_cmd_exists(t_cmd **cmd, t_data *data)
 {
-	if (ft_strchr((*cmd)->args[0], '/'))
-		(*cmd)->path = allocpy((*cmd)->args[0]);
-	else if (!is_bltin(*cmd) &&  !((*cmd)->path = get_cmd_path(data->envp, (*cmd)->args[0])))
+	if (!(*cmd)->args)
 	{
-		error((*cmd)->args[0], ": command not found", data, 127);
 		data->cmd_qty--;
 		*cmd = (*cmd)->next;
-		data->ex_stat = 127;
 		return (0);
 	}
 	return (1);
 }
 
-
-	// data->fds[data->fds_c++] = dup2(data->std_in, STDIN_FILENO);
-	// if (data->fds[data->fds_c] == -1)
-    // 	return (perror("dup2 std_in"), -1);
-    // data->fds[data->fds_c++] = dup2(data->std_out, STDOUT_FILENO);
-	// if (data->fds[data->fds_c] == -1)
-    //     return (perror("dup2 std_out"), -1);
-
-int reset_descrpt(t_data *data)
+int	check_cmd(t_cmd **cmd, t_data *data)
 {
-	if (dup2(data->std_in, STDIN_FILENO) == -1)
-    	return (perror("dup2 std_in"), -1);
-    if (dup2(data->std_out, STDOUT_FILENO) == -1)
-        return (perror("dup2 std_out"), -1);
-	while (data->fds_c > 3)
+	if (!is_cmd_exists(cmd, data))
+		return (0);
+	if (is_bltin(*cmd, data))
+		return (1);
+	else if (ft_strchr((*cmd)->args[0], '/'))
 	{
-		close(data->fds[data->fds_c - 1]);
-		data->fds_c--;
+		(*cmd)->path = ft_strdup((*cmd)->args[0]);
+		if (!(*cmd)->path)
+			return (error("alloc error", NULL, NULL, 2), 0);
 	}
-	// close(data->std_in);//
-    // close(data->std_out);//
-    return 0;
+	else
+		((*cmd)->path = get_cmd_path(data->envp, (*cmd)->args[0]));
+	if (!(*cmd)->path)
+	{
+		error((*cmd)->args[0], ": command not found", data, 127);
+		if ((*cmd)->prev && (*cmd)->prev->ok)
+			close(data->next_pipe[0]);
+		data->cmd_qty--;
+		*cmd = (*cmd)->next;
+		data->ex_stat = 127;
+		return (0);
+	}
+	(*cmd)->ok++;
+	return (1);
 }
 
+int	reset_descrpt(t_data *data)
+{
+	t_cmd	*cmd;
+
+	if (dup2(data->std_in, STDIN_FILENO) == -1)
+		return (perror("dup2 std_in"), -1);
+	if (dup2(data->std_out, STDOUT_FILENO) == -1)
+		return (perror("dup2 std_out"), -1);
+	while (data->fds_c > 3)
+		close(data->fds[--data->fds_c]);
+	cmd = data->cmd_list;
+	while (cmd)
+	{
+		if (!cmd->bi || !data->ex_stat)
+			waitpid(cmd->pid, &data->ex_stat, 0);
+		cmd = cmd->next;
+	}
+	return (0);
+}
+
+
+#include "../minishell.h"
 
 int	manage_pipes(t_cmd *cmd, t_data *data )
 {
@@ -93,7 +127,7 @@ int	manage_pipes(t_cmd *cmd, t_data *data )
 	{
 		data->prev_pipe[0] = data->next_pipe[0];
 		if (dup2(data->prev_pipe[0], STDIN_FILENO) == -1)
-			return perror("dup2 prev_pipe"), -1;
+			return (perror("dup2 prev_pipe"), -1);
 		close(data->prev_pipe[0]);
 	}
 	if (cmd->next)
@@ -101,17 +135,18 @@ int	manage_pipes(t_cmd *cmd, t_data *data )
 		if (pipe (data->next_pipe) < 0)
 			return (perror("pipe error"), -1);
 		if (dup2(data->next_pipe[1], STDOUT_FILENO) == -1)
-			return perror("dup2 next_pipe"), -1;
+			return (perror("dup2 next_pipe"), -1);
 		close(data->next_pipe[1]);
 	}
-	else 
+	else
 	{
 		if (dup2(data->std_out, STDOUT_FILENO) == -1)
-			return perror("dup2 std_out"), -1;
+			return (perror("dup2 std_out"), -1);
 	}
 	return (0);
 }
-void save_orig_descrpit(t_data *data)
+
+void	save_orig_descrpit(t_data *data)
 {
 	data->std_in = dup(STDIN_FILENO);
 	data->fds[data->fds_c++] = data->std_in;
@@ -119,31 +154,27 @@ void save_orig_descrpit(t_data *data)
 	data->fds[data->fds_c++] = data->std_out;
 }
 
-int	handle_cmd(t_data *data, t_cmd *cmd)
+void	handle_cmd(t_data *data, t_cmd *cmd)
 {
 	save_orig_descrpit(data);
-	while(cmd)
+	while (cmd)
 	{
-		if (getcwd(data->cwd, sizeof(data->cwd)) == NULL)       
-			return (perror("getcwd error"), 1);
+		if (getcwd(data->cwd, sizeof(data->cwd)) == NULL)
+			my_exit(data, "cwd_ errror\n");
 		if (!check_cmd(&cmd, data))
-			continue;
+			continue ;
 		manage_pipes(cmd, data);
 		if (!redirect(&cmd, data))
-			continue;
+			continue ;
 		if (cmd->bi)
 			data->ex_stat = builtin(cmd, data);
-		else 
+		else
 		{
 			cmd->pid = fork();
 			if (cmd->pid == 0)
 				exec(data, cmd);
-			waitpid(cmd->pid, &cmd->ex_stat, 0);
 		}
-		if (!cmd->next)
-			data->ex_stat = cmd->ex_stat;
 		cmd = cmd->next;
 	}
-		reset_descrpt(data);
-	return (0);
- }
+	reset_descrpt(data);
+}

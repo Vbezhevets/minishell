@@ -1,6 +1,4 @@
 #include "../minishell.h"
-#include <time.h>
-#include <unistd.h>
 
 void	free_and_null_(char **a)
 {
@@ -18,16 +16,33 @@ void	free_and_null_(char **a)
 	}
 }
 
-void free_tree(t_node *node)
+void	f_till(char **a, int c)
+{
+	int	i;
+
+	i = 0;
+	if (a != NULL)
+	{
+		while (i <= c && a[i] != NULL)
+		{
+			free(a[i]);
+			a[i] = NULL;
+			i++;
+		}
+	}
+}
+
+void	free_tree(t_node *node)
 {
 	if (!node)
-		return;
+		return ;
 	if (node->left)
 		free_tree(node->left);
 	if (node->right)
 		free_tree(node->right);
-	if (node && node->value && node->type != CMD_NODE && node->type != RDRCT_NODE)
-	{	
+	if (node && node->value && node->type != CMD_NODE
+		&& node->type != RDRCT_NODE)
+	{
 		free(node->value);
 		node->value = NULL;
 	}
@@ -35,9 +50,18 @@ void free_tree(t_node *node)
 	node = NULL;
 }
 
+void	fnl(void *pntr)
+{
+	if (pntr)
+	{
+		free(pntr);
+		pntr = NULL;
+	}
+}
+
 void	free_tok(t_token *token)
 {
-	t_token *temp;
+	t_token	*temp;
 
 	while (token)
 	{
@@ -45,7 +69,6 @@ void	free_tok(t_token *token)
 		token = token->next;
 		if (temp->value)
 		{
-
 			free(temp->value);
 			temp->value = NULL;
 		}
@@ -53,9 +76,10 @@ void	free_tok(t_token *token)
 		temp = (NULL);
 	}
 }
+
 void	free_var(t_var *var)
 {
-	t_var *temp;
+	t_var	*temp;
 
 	while (var)
 	{
@@ -80,12 +104,12 @@ void	free_field(t_cmd_field	*field)
 	t_cmd_field	*temp;
 
 	if (!field)
-		return;
+		return ;
 	while (field)
 	{
 		temp = field;
 		field = field->next;
-		if(temp->value)
+		if (temp->value)
 		{
 			free(temp->value);
 			temp->value = NULL;
@@ -97,7 +121,7 @@ void	free_field(t_cmd_field	*field)
 void	free_cmds(t_cmd *cmd, t_cmd *temp)
 {
 	while (cmd)
-	{	
+	{
 		temp = cmd;
 		cmd = cmd->next;
 		if (temp->to_to_file)
@@ -106,14 +130,13 @@ void	free_cmds(t_cmd *cmd, t_cmd *temp)
 			free_field(temp->to_file);
 		if (temp->from_file)
 			free_field(temp->from_file);
-		// free(temp->her_doc);
 		if (temp->path)
 		{
 			free(temp->path);
 			temp->path = NULL;
 		}
 		if (temp->args)
-		{	
+		{
 			free_and_null_(temp->args);
 			free(temp->args);
 			temp->args = NULL;
@@ -123,11 +146,10 @@ void	free_cmds(t_cmd *cmd, t_cmd *temp)
 	}
 }
 
-void free_all(t_data *data)
+void	free_all(t_data *data)
 {
-
 	if (!data)
-		return;
+		return ;
 	if (data->tree)
 		free_tree(data->tree);
 	if (data->tok_list)
@@ -138,17 +160,33 @@ void free_all(t_data *data)
 	data->f = 1;
 }
 
-void error(char *s1, char *s2, t_data *data, int e) //,data
+void	ch3to_null(char **one, char **two, char **three)
 {
-	//free
+	if (one)
+	{
+		free_and_null_(one);
+		free(one);
+	}
+	if (two)
+	{
+		free_and_null_(two);
+		free(two);
+	}
+	if (three)
+	{
+		free_and_null_(three);
+		free(three);
+	}
+}
+
+void	error(char *s1, char *s2, t_data *data, int e)
+{
 	if (s2)
 	{
-		// write(2, "\"", 1);
 		write(2, s1, ft_strlen(s1));
-		// write(2, "\" ", 2);
 		write(2, s2, ft_strlen(s2));
 	}
-	else 
+	else
 		write(2, s1, ft_strlen(s1));
 	write(2, "\n", 1);
 	if (data)

@@ -1,15 +1,95 @@
 #include "../minishell.h"
-#include <stdlib.h>
 
-
-char *exp_var(char *var_name, t_data *data)
+void	connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
 {
-	int	i;
-	t_var	*var;
-	char  	*value;
+	if (!*expanded)
+		return ;
+	if ((in_token)->prev)
+	{
+		(in_token)->prev->next = *expanded;
+		(*expanded)->prev = (in_token)->prev;
+	}
+	else
+		data->tok_list = *expanded;
+	if ((in_token)->next)
+	{
+		(in_token)->next->prev = *expanded;
+		(*expanded)->next = (in_token)->next;
+		(*expanded)->exp = 0;
+	}
+}
 
-	i = 0;
+t_token	*exp_(char *tok_value, t_token **in_token, t_data *data, char *unquot)
+{
+	char	*expanded_str;
+	t_token	*expanded_tok;
+
+	expanded_str = NULL;
+	unquot = NULL;
+	unquot = get_rid_q(tok_value, 0, 0, NULL);
+	if (!unquot)
+		expanded_tok = create_tok("", data, 0);
+	else
+	{
+		expanded_str = expand_str(unquot, data, NULL, unquot);
+		if (ft_strlen(expanded_str))
+			expanded_tok = tokenizer(expanded_str, data, NULL, 0);
+		else
+			expanded_tok = create_tok("", data, 0);
+	}
+	free(expanded_str);
+	connect_tok_list(&expanded_tok, *in_token, data);
+	if (unquot && unquot[0] && unquot[0] != '$' && unquot[1])
+		expanded_tok->exp = 0;
+	if (tok_value != unquot)
+		free(unquot);
+	free((*in_token)->value);
+	free((*in_token));
+	return (expanded_tok);
+}
+
+t_token	*expand_tokens(t_token **in_token)
+{
+	t_token	*expanded_tok;
+	t_data	*data;
+	char	*tok_value;
+
+	tok_value = (*in_token)->value;
+	data = (*in_token)->data;
+	if (!(*in_token)->exp || !ft_strset(tok_value, "$\"\'"))
+		return (*in_token);
+	else if (no_extr_need((*in_token)->value, '\''))
+	{
+		(*in_token)->value = get_rid_q(tok_value, 0, 0, NULL);
+		free(tok_value);
+		(*in_token)->exp = 0;
+		return (*in_token);
+	}
+	else
+	{
+		expanded_tok = exp_(tok_value, in_token, data, NULL);
+		return (expanded_tok);
+	}
+	return (NULL);
+}
+
+char	*exp_var(char *var_name, t_data *data, char **str)
+{
+	t_var	*var;
+	char	*beg;
+
+	if (str)
+		beg = *str;
 	var = data->var;
+	if (str)
+	{
+		while ((**str) && (ft_isalnum(**str) || **str == '_'))
+			(*str)++;
+		if (*str > beg)
+			var_name = ft_substr(beg, 0, (*str) - beg);
+		else
+			return ("$");
+	}
 	while (var)
 	{
 		if (strnlcmp(var->key, var_name))
@@ -17,16 +97,10 @@ char *exp_var(char *var_name, t_data *data)
 		var = var->next;
 	}
 	free(var_name);
-	var_name = NULL;
-	// printf ("%s is ", var_name);
-	// error("wrong var name"); 
 	return (NULL);
 }
-/// сделать сплит который оставит $
-/// раскрыть $ в отдельный массив строк
-/// последовательно склеить
 
-int no_extr_need(char *str, char q)
+int	no_extr_need(char *str, char q)
 {
 	int	i;
 	int	k;
@@ -36,7 +110,7 @@ int no_extr_need(char *str, char q)
 		return (1);
 	i = 0;
 	while (str[i] && str[i] != '$')
-			i++;
+		i++;
 	k = 0;
 	qcount = 0;
 	while (k <= i)
@@ -45,10 +119,10 @@ int no_extr_need(char *str, char q)
 			qcount++;
 		k++;
 	}
-		return (qcount % 2);
+	return (qcount % 2);
 }
 
-char *add_str(char *res, char *beg, char *var, t_data *data)
+char	*add_str(char *res, char *beg, char *var, t_data *data)
 {
 	char	*new;
 
@@ -63,11 +137,6 @@ char *add_str(char *res, char *beg, char *var, t_data *data)
 		free (beg);
 		beg = NULL;
 	}
-	if (strnlcmp(var, "$"))
-	{
-		free (var);
-		var = NULL;
-	}
 	if (data->temp)
 	{
 		free(data->temp);
@@ -76,106 +145,38 @@ char *add_str(char *res, char *beg, char *var, t_data *data)
 	return (new);
 }
 
-char	*get_error_num(t_data *data, int *k)
+char	*get_error_num(t_data *data, char **str)
 {
 	data->temp = ft_itoa(data->ex_stat);
-	(*k)++;
+	*str = *str + 1;
 	return (data->temp);
 }
 
-char *expand_str(char *str, t_data *data, int i, int k)
+char	*expand_str(char *str, t_data *data, char *res, char *beg)
 {
-	char	*res;
 	char	*var_val;
-	char 	*beg;
-	
-	res = NULL;
-	beg = NULL;
-	if (!str)
-		return (NULL);
-	while(str[i])
+
+	while (*str)
 	{
-		while (str[i] && str[i] != '$')
-			i++;
-		beg = ft_substr(str, 0, i);
-		if (str[i] == '$')
+		while (*str && *str != '$')
+			str++;
+		beg = ft_substr(beg, 0, str - beg);
+		if (*str == '$')
 		{
-			i++;
-			k = i;
-			while (str[k] && (ft_isalnum(str[k]) || str[k] == '_'))
-				k++;
-			if (str[i] == '?')
-				var_val = get_error_num(data, &k); 
-			else if (k > i)
- 				var_val = exp_var(ft_substr(str, i, k - i), data);
+			str++;
+			if (*str == '?')
+				var_val = get_error_num(data, &str);
 			else
-				var_val = allocpy("$");
+				var_val = exp_var(NULL, data, &str);
 			res = (add_str(res, beg, var_val, data));
 		}
-		else 
-			return(add_str(res, beg, NULL, data)); //kz
-		str = str + k;
-		i = 0;
+		else
+			return (add_str(res, beg, NULL, data));
+		beg = str;
 	}
 	if (!res)
-		return (allocpy("\0"));
+		res = ft_strdup("\0");
+	if (!res)
+		return (error("alloc error", NULL, NULL, 2), NULL);
 	return (res);
 }
-
-void connect_tok_list(t_token **expanded, t_token *in_token, t_data *data)
-{
-	t_token	*next;
-
-	if ((in_token)->prev) // means not first
-		{
-			(in_token)->prev->next = *expanded;
-			(*expanded)->prev = (in_token)->prev;
-		}
-	else
-		data->tok_list = *expanded;
-	if ((in_token)->next)
-	{
-		next = (*expanded)->next;
-		while (next->next)
-			next = next->next;
-		(in_token)->next->prev = *expanded;
-		next->next = (in_token)->next;
-		(*expanded)->exp = 0;
-	}
-}
-
-t_token *expand_tokens(t_token **in_token)
-{
-	t_token	*expanded_tok;
-	t_data	*data;
-	char 	*tok_value;
-	char	*unquot;
-	char 	*expanded_str;
-
-	tok_value = (*in_token)->value;
-	data = (*in_token)->data;
-	if (!(*in_token)->exp || !ft_strset(tok_value, "$\"\'")) //
-		return (*in_token);
-	else if (no_extr_need((*in_token)->value, '\''))
-		return ((*in_token)->value = get_rid_q(tok_value, *in_token), free(tok_value), (*in_token));
-	else
-	{
-		unquot = get_rid_q(tok_value, *in_token);
-		expanded_str = (expand_str(unquot, data, 0, 0));
-		expanded_tok = tokenizer(expanded_str, data, NULL, 0);
-		if (expanded_str)
-			free(expanded_str);
-		if (!expanded_tok)
-			expanded_tok = create_tok("", data, 0);
-		connect_tok_list(&expanded_tok, *in_token, data);
-		free((*in_token)->value);
-		free((*in_token));
-		if (unquot && unquot[0] && unquot[0] != '$' && unquot[1]) // no variable
-			expanded_tok->exp = 0;
-		free(unquot);
-		unquot = NULL;
-		return (expanded_tok);
-	}
-	return (NULL);
-}
- 

@@ -1,38 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   str.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bvalerii <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/19 16:32:14 by bvalerii          #+#    #+#             */
+/*   Updated: 2024/08/19 16:32:36 by bvalerii         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
-#include <string.h>
 
-char	*allocpy(char *str)
+int	is_empty(char *str)
 {
-	return (ft_substr(str, 0, ft_strlen(str)));
-}
-
-int is_empty(char *str)
-{
-	int i = 0;
 	if (!ft_strlen(str))
 		return (1);
-	while(*str)
+	while (*str)
 	{
-		if (!ft_strset(str, DELIM))
-			return(0);
+		if (!ft_strchr(DELIM, *str))
+			return (0);
 		str++;
 	}
-	return(1);
+	return (1);
 }
 
-int strnlcmp(char *str1, char *str2)
+int	strnlcmp(char *str1, char *str2)
 {
-    if (!str1 || !str2)
-        return(-1);
-	if ((ft_strlen(str1) == ft_strlen(str2)) && 
-    !ft_strncmp(str1, str2, ft_strlen(str2)))
-        return (1);
-    return 0;
+	if (!str1 || !str2)
+		return (0);
+	if ((ft_strlen(str1) == ft_strlen(str2))
+		&& !ft_strncmp(str1, str2, ft_strlen(str2)))
+		return (1);
+	return (0);
 }
 
-int ft_strset(char *str, char *set)
+int	ft_strset(char *str, char *set)
 {
-	char	*b;
 	int		i;
 
 	if (!str || !set)
@@ -45,34 +49,25 @@ int ft_strset(char *str, char *set)
 			if (str[i] == *set)
 				return (1);
 			i++;
-		}	
+		}
 		set++;
 		i = 0;
 	}
-	return i;
+	return (i);
 }
 
-char **add_str_arr(char **old, char *str)
+int	chr_mlc(char ***arr, int i)
 {
-	int		i;
-	char 	**new;
-	
-	i = 0;
-	while (old[i])
-		i++;
-	new = (char **)malloc(sizeof(char *) * (i + 2));
-	//if
-	i = 0;
-	while (old[i])
-	{
-		new[i] = malloc(sizeof(char *) * (ft_strlen(old[i]) + 1));
-		//if free_and_null_(new);
-		ft_strcpy(new[i], old[i]);	
-		i++;
-	}
-	new[i] = malloc(sizeof(char *) * (ft_strlen(str) + 1));
-	new[i + 1] = NULL;
-	free_and_null_(old);
-	free(old);
-	return(new);
+	*arr = malloc((sizeof(char *) * (i)));
+	if (!*arr)
+		return (0);
+	return (1);
+}
+
+int	splt_mlc(char ***splited, char *to_split, char delim)
+{
+	*splited = ft_split(to_split, delim);
+	if (!*splited)
+		return (0);
+	return (1);
 }

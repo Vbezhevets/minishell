@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+         #
+#    By: ggero <ggero@student.42vienna.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/05 12:50:27 by bvalerii          #+#    #+#              #
-#    Updated: 2024/03/04 19:54:28 by bvalerii         ###   ########.fr        #
+#    Updated: 2024/08/14 13:42:58 by ggero            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SRCS = \
 		ft_toupper.c ft_tolower.c ft_calloc.c ft_strdup.c ft_substr.c \
 		ft_strjoin.c ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c \
 		ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
-		ft_printf.c ft_putchar.c ft_putx.c ft_strcpy.c get_next_line.c
+		ft_printf.c ft_putchar.c ft_putx.c ft_strcpy.c get_next_line_bonus.c get_next_line_utils_bonus.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

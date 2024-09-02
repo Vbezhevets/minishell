@@ -1,20 +1,17 @@
 #include "../minishell.h"
-#include <stdio.h>
 
-t_cmd *init_cmd(t_data *data, t_cmd *prev)
+t_cmd	*init_cmd(t_data *data, t_cmd *prev)
 {
 	t_cmd	*cmd;
 
-	
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (error("alloc errror\n", NULL, data, 12), NULL);
-	// data->cmd[data->cmd_num] = cmd;
 	data->cmd_qty++;
 	cmd->args_qty = 0;
 	cmd->bi = 0;
+	cmd->pid = 0;
 	cmd->from_fd = 0;
-	cmd->interp = 1; //
 	cmd->args = NULL;
 	cmd->to_file = NULL;
 	cmd->to_to_file = NULL;
@@ -24,119 +21,86 @@ t_cmd *init_cmd(t_data *data, t_cmd *prev)
 	cmd->prev = prev;
 	cmd->path = NULL;
 	cmd->ex_stat = 0;
+	cmd->ok = 0;
 	return (cmd);
 }
 
-void add_cmd(t_cmd *cmd, t_data *data)
+void	add_cmd(t_cmd *cmd, t_data *data)
 {
 	while (cmd->next)
 		cmd = cmd->next;
 	cmd->next = init_cmd(data, cmd);
 }
 
-char **add_cmd_arg(char **old, int *qty, char *str)
+char	**add_cmd_arg(char **old, int *qty, char *str)
 {
-	int i;
-	char **new_a;
+	int		i;
+	char	**new_a;
 
-	new_a = (char **)malloc((*qty + 2) * sizeof(char*));
-    // if (!new_a)
+	new_a = (char **)malloc((*qty + 2) * sizeof(char *));
+	if (!new_a)
+		return (error("all0c error", NULL, NULL, 2), NULL);
 	i = 0;
 	while (i < *qty)
 	{
 		new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(old[i]) + 1));
-		//if (!new_a[i])
+		if (!new_a[i])
+			return (f_till((new_a), --i), free(new_a), NULL);
 		ft_strcpy(new_a[i], old[i]);
 		i++;
 	}
 	if (old)
-	{
-		free_and_null_(old);
-		free(old);
-	}
+		ch3to_null(old, NULL, NULL);
 	new_a[i] = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
-	//if
+	if (!new_a[i])
+		return (f_till((new_a), --i), free(new_a), NULL);
 	ft_strcpy(new_a[i], str);
 	new_a[i + 1] = NULL;
-    *qty = *qty + 1;
+	*qty = *qty + 1;
 	return (new_a);
 }
 
-t_cmd_field *create_field(char *input_str, int type)
+t_cmd_field	*create_field(char *input_str, int type)
 {
-	t_cmd_field *field;
+	t_cmd_field	*field;
 
 	field = (t_cmd_field *)malloc(sizeof(t_cmd_field));
-	// if (!field->value)
-	// 	return (free_tok(field), exit(1), NULL); //handle exit in error.c
+	if (!field)
+		return (error("alloc errrorrr", NULL, NULL, 2), NULL);
 	field->length = ft_strlen(input_str);
 	field->value = (char *)malloc((field->length + 1) * sizeof(char));
-	// if (field->value == NULL)
-	// 	return (free_tok(field), exit(1), NULL); //handle exit
+	if (field->value == NULL)
+		return (free(field), NULL);
 	ft_strlcpy(field->value, input_str, field->length + 1);
-    field->type = type;
+	field->type = type;
 	field->next = NULL;
 	field->prev = NULL;
 	if (type == TO_FILE)
-		field->P = 2;
-    if (type == TO_TO_FILE)
-		field->P = 3;
-    if (type == FROM_FILE)
-		field->P = 1;
+		field->p = 2;
+	if (type == TO_TO_FILE)
+		field->p = 3;
+	if (type == FROM_FILE)
+		field->p = 1;
 	return (field);
 }
 
-void assign_fild(t_node *node, t_cmd *cmd)
+void	assign_fild(t_node *node, t_cmd *cmd)
 {
-	t_cmd_field *field;
-	
-	if (node->type == ARG  || node->type == CMD)
+	t_cmd_field	*field;
+
+	if (node->type == ARG || node->type == CMD)
 		cmd->args = add_cmd_arg(cmd->args, &cmd->args_qty, node->value);
-	else
+	else if (node->type != HEREDOC)
 	{
-		field = create_field(node->value, node->type); // check ""
+		field = create_field(node->value, node->type);
 		if (node->type == TO_FILE || node->type == TO_TO_FILE)
 			cmd->to_file = field;
 		else if (node->type == FROM_FILE)
 			cmd->from_file = field;
+		else
+		{
+			free(field->value);
+			free(field);
+		}
 	}
 }
-
-void build_cmd(t_node *node, t_data *data, t_cmd *cmd, t_cmd_field *exist_arg)
-{
-	if (data->cmd_qty == 0)
-		data->cmd_list = init_cmd(data, NULL); // new
-	cmd = data->cmd_list;
-	while (cmd && cmd->next)
-		cmd = cmd->next;
-	if (node->type == TO_FILE || node->type == TO_TO_FILE)
-		exist_arg = cmd->to_file; 
-	else if (node->type == FROM_FILE)
-		exist_arg = cmd->from_file;
-	// else if (node->type == HEREDOC)
-	// 	exist_arg = data->cmd[data->cmd_num]->her_doc;
-	if (!exist_arg || node->type == ARG || node->type == CMD)
-		assign_fild(node, cmd);
-	else
-	{
-		while(exist_arg && exist_arg->next)
-			exist_arg = exist_arg->next;
-		exist_arg->next = create_field(node->value, node->type);
-	}
-}
-
-void travel_tree(t_node *node,  int depth, t_data *data)
-{
-	if (!node)
-		return;
-	if (node->left)
-		travel_tree(node->left, depth + 1, data);
-	if (node->type == PIPE)
-		add_cmd(data->cmd_list, data); // nandle |
-	if (node->right)
-		travel_tree(node->right, depth + 1, data);
-	if (node->type > 9 && node->type < 16)
-		build_cmd(node, data, NULL, NULL);
-}
-
-

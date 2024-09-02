@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bvalerii <bvalerii@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ggero <ggero@student.42vienna.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 15:05:28 by bvalerii          #+#    #+#             */
-/*   Updated: 2024/01/27 21:35:08 by bvalerii         ###   ########.fr       */
+/*   Updated: 2024/08/20 09:20:18 by ggero            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ char	*ft_strtrim(char *src, char *set)
 		i--;
 	return (ft_substr(src, 0, i));
 }
+
 char	*ft_trimend(char *src, char c)
 {
 	int	i;
@@ -30,6 +31,5 @@ char	*ft_trimend(char *src, char c)
 	i = ft_strlen(src);
 	while (i >= 0 && src[i] != c)
 		i--;
-	
 	return (ft_substr(src, i, ft_strlen(src) - 1));
 }
